@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>トレーニングプラン</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="トレ">
+<meta name="theme-color" content="#0D1117">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230D1117'/%3E%3Crect x='28' y='78' width='124' height='24' rx='6' fill='%23fff'/%3E%3Crect x='18' y='62' width='22' height='56' rx='6' fill='%23D8341C'/%3E%3Crect x='140' y='62' width='22' height='56' rx='6' fill='%23D8341C'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFFFF; --panel:#F2F4F7; --line:#C9D0DA; --line2:#E2E7ED;
+  --text:#0D1117; --sub:#4A5563;
+  --chip:#0D1117; --chipfg:#FFFFFF;
+  --A:#D8341C; --B:#0B5FCC; --S:#7A2FBF; --D:#0E7A3C;
+  --hot:#B8860B; --hotbg:#FFF9E8; --hottx:#7A5B00;
+  --warn:#B3261E; --warnbg:#FDECEA;
+  --ok:#0E7A3C; --okbg:#E7F5ED;
+  --ssbg:#F0F6FF; --ssln:#C7DBFA;
+}
+body.dark{
+  --bg:#0E1218; --panel:#1B222C; --line:#414D5C; --line2:#28313C;
+  --text:#F3F6F9; --sub:#A8B3C1;
+  --chip:#F3F6F9; --chipfg:#0E1218;
+  --A:#FF6E4E; --B:#5EA9FF; --S:#C58BFF; --D:#43CF80;
+  --hot:#E8B93C; --hotbg:#2A2312; --hottx:#F0CE6A;
+  --warn:#FF7062; --warnbg:#2E1614;
+  --ok:#43CF80; --okbg:#122A1D;
+  --ssbg:#141F2E; --ssln:#2C4460;
+}
+html{color-scheme:light; -webkit-text-size-adjust:100%}
+body.dark{color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:"Noto Sans JP",system-ui,sans-serif;
+  font-size:16px;line-height:1.65;padding-bottom:110px}
+.wrap{max-width:640px;margin:0 auto;padding:0 14px}
+button{font-family:inherit;cursor:pointer}
+
+/* ===== header ===== */
+.mast{padding:22px 0 16px;display:flex;align-items:flex-start;gap:12px}
+.mast .mtxt{flex:1;min-width:0}
+.mast h1{font-family:"Oswald","Arial Narrow",sans-serif;font-weight:700;
+  font-size:clamp(26px,7.5vw,36px);line-height:1.05}
+.mast .sub{font-size:13.5px;color:var(--sub);margin-top:6px;font-weight:500}
+.themebtn{flex:0 0 auto;background:var(--panel);border:2px solid var(--line);
+  border-radius:9px;width:46px;height:46px;font-size:20px;line-height:1;color:var(--text)}
+
+/* next-up card */
+.next{margin-top:6px;border:3px solid var(--text);border-radius:10px;overflow:hidden}
+.next-h{background:var(--chip);color:var(--chipfg);padding:8px 13px;font-size:13px;font-weight:700}
+.todaybar{padding:12px 14px;border-bottom:2px solid var(--line);
+  display:flex;flex-direction:column;gap:2px;border-left:6px solid var(--line)}
+.todaybar.ga{border-left-color:var(--A)} .todaybar.gb{border-left-color:var(--B)}
+.todaybar.gs{border-left-color:var(--S)} .todaybar.gd{border-left-color:var(--D)}
+.todaybar.off{background:var(--panel)}
+.tdate{font-size:12px;color:var(--sub);font-weight:700}
+.tbig{font-size:22px;font-weight:900;line-height:1.2}
+.todaybar.ga .tbig{color:var(--A)} .todaybar.gb .tbig{color:var(--B)}
+.todaybar.gs .tbig{color:var(--S)} .todaybar.gd .tbig{color:var(--D)}
+.tnote{font-size:12.5px;color:var(--sub);font-weight:600}
+.tsync{margin-top:8px;background:var(--chip);color:var(--chipfg);border:none;
+  border-radius:6px;padding:9px;font-size:13px;font-weight:700}
+.tok{margin-top:6px;font-size:12px;font-weight:700;color:var(--ok)}
+.next-b{padding:14px;display:flex;align-items:center;gap:14px}
+.next-badge{width:62px;height:62px;border-radius:10px;display:grid;place-items:center;color:#fff;flex:0 0 auto}
+.next-badge.a{background:var(--A)} .next-badge.b{background:var(--B)}
+.next-badge.s{background:var(--S)} .next-badge.d{background:var(--D)}
+.next-badge span{font-family:"Oswald","Arial Narrow",sans-serif;font-size:36px;font-weight:700;line-height:1}
+.next-txt{flex:1;min-width:0}
+.next-txt .t{font-size:19px;font-weight:900;line-height:1.25}
+.next-txt .s{font-size:13px;color:var(--sub);font-weight:500;margin-top:2px}
+.advance{background:var(--chip);color:var(--chipfg);border:none;border-radius:7px;
+  padding:11px 14px;font-size:14px;font-weight:700;flex:0 0 auto}
+.cyclerow{display:flex;gap:6px;padding:0 14px 14px}
+.cchip{flex:1;text-align:center;border:2px solid var(--line);border-radius:6px;padding:7px 1px;
+  font-size:11.5px;font-weight:700;color:var(--sub);background:var(--bg);white-space:nowrap}
+.cchip.on{color:#fff;border-color:transparent}
+.cchip.on.a{background:var(--A)} .cchip.on.b{background:var(--B)}
+.cchip.on.s{background:var(--S)} .cchip.on.d{background:var(--D)}
+
+.slots{margin-top:14px;display:flex;flex-direction:column;gap:7px}
+.slot{display:flex;gap:10px;align-items:center;border:2px solid var(--line);
+  border-radius:6px;padding:9px 12px;font-size:14px}
+.slot .t{font-weight:700;min-width:80px}
+.slot .d{color:var(--sub);font-weight:500}
+.slot.off{background:var(--panel);border-style:dashed}
+
+/* ===== sticky bar ===== */
+.tabbar{position:sticky;top:0;z-index:30;background:var(--bg);
+  border-bottom:3px solid var(--text);margin-top:22px}
+.bar-in{max-width:640px;margin:0 auto;padding:9px 14px 0}
+.splitsw{display:flex;border:2.5px solid var(--S);border-radius:9px;overflow:hidden;margin-bottom:7px}
+.splitsw button{flex:1;background:var(--bg);border:none;padding:7px 6px;color:var(--sub);
+  font-weight:700;font-size:13.5px;line-height:1.2;text-align:center}
+.splitsw button .s{display:block;font-size:10.5px;font-weight:500;opacity:.9;margin-top:1px}
+.splitsw button+button{border-left:2.5px solid var(--S)}
+.splitsw button.sel{background:var(--S);color:#fff}
+body.dark .splitsw button.sel{color:#0E1218}
+.slotsw{display:flex;border:2.5px solid var(--text);border-radius:9px;overflow:hidden}
+.slotsw button{flex:1;background:var(--bg);border:none;padding:8px 6px;color:var(--sub);
+  font-weight:700;font-size:14px;line-height:1.25;text-align:center}
+.slotsw button .s{display:block;font-size:11px;font-weight:500;opacity:.9;margin-top:1px}
+.slotsw button+button{border-left:2.5px solid var(--text)}
+.slotsw button.sel{background:var(--chip);color:var(--chipfg)}
+.slotsw button.sel .s{opacity:.75}
+.slotsw.dim{opacity:.45}
+.tabs{display:flex;max-width:640px;margin:0 auto}
+.tab{flex:1;background:var(--bg);border:none;padding:10px 3px 9px;
+  color:var(--sub);font-weight:700;font-size:13.5px;border-bottom:4px solid transparent;
+  text-align:center;line-height:1.25;min-width:0}
+.tab .tk{font-family:"Oswald","Arial Narrow",sans-serif;font-size:16px;font-weight:700}
+.tab .s{display:block;font-size:10px;font-weight:500;opacity:.85;margin-top:1px;white-space:nowrap}
+.tab[data-g="a"].sel{color:var(--A);border-bottom-color:var(--A)}
+.tab[data-g="b"].sel{color:var(--B);border-bottom-color:var(--B)}
+.tab[data-g="s"].sel{color:var(--S);border-bottom-color:var(--S)}
+.tab[data-g="d"].sel{color:var(--D);border-bottom-color:var(--D)}
+.tab .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);
+  margin-left:4px;vertical-align:middle;opacity:0}
+.tab.hasprog .dot{opacity:1}
+.tab .nx{display:inline-block;font-size:9px;font-weight:700;background:var(--chip);
+  color:var(--chipfg);border-radius:3px;padding:1px 4px;margin-left:3px;vertical-align:middle;opacity:0}
+.tab.isnext .nx{opacity:1}
+
+/* ===== panel head ===== */
+.phead{margin-top:18px;border-radius:9px;padding:15px;color:#fff}
+.phead.a{background:var(--A)} .phead.b{background:var(--B)}
+.phead.s{background:var(--S)} .phead.d{background:var(--D)}
+body.dark .phead{color:#0E1218}
+.phead .tag{display:inline-block;background:rgba(255,255,255,.22);border-radius:4px;
+  padding:3px 9px;font-size:12px;font-weight:700}
+body.dark .phead .tag{background:rgba(0,0,0,.18)}
+.phead h2{font-family:"Oswald","Arial Narrow",sans-serif;font-size:28px;font-weight:600;margin-top:8px;line-height:1.15}
+.phead .m{font-size:13.5px;margin-top:4px;font-weight:500}
+.pbar{margin-top:12px;background:rgba(255,255,255,.28);border-radius:20px;height:9px;overflow:hidden}
+body.dark .pbar{background:rgba(0,0,0,.2)}
+.pbar i{display:block;height:100%;background:#fff;border-radius:20px;width:0;transition:width .25s}
+body.dark .pbar i{background:#0E1218}
+.pmeta{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;margin-top:6px}
+.reset{background:rgba(255,255,255,.2);border:none;color:inherit;border-radius:5px;
+  padding:3px 10px;font-size:12px;font-weight:700}
+body.dark .reset{background:rgba(0,0,0,.18)}
+
+/* ===== warmup ===== */
+.warm{margin-top:13px;border:3px solid var(--hot);border-radius:9px;background:var(--hotbg);padding:13px}
+.warm h3{font-size:15px;font-weight:900;color:var(--hottx);margin-bottom:7px}
+.warm ul{list-style:none;font-size:15px}
+.warm li{padding:2px 0 2px 18px;position:relative;font-weight:500}
+.warm li::before{content:"▪";position:absolute;left:2px;color:var(--hot)}
+.ramp{margin-top:10px;padding:9px 11px;background:var(--bg);border:2px solid var(--hot);border-radius:6px}
+.ramp .l{font-size:12px;font-weight:700;color:var(--hottx)}
+.ramp .v{font-family:"Oswald","Arial Narrow",sans-serif;font-size:18px;font-weight:600;margin-top:2px}
+
+/* ===== exercise ===== */
+.ex{margin-top:11px;border:2px solid var(--line);border-radius:9px;overflow:hidden}
+.ex.done{border-color:var(--ok)}
+.ex-h{display:flex;align-items:center;gap:9px;background:var(--panel);
+  padding:9px 12px;border-bottom:2px solid var(--line)}
+.ex.done .ex-h{background:var(--okbg);border-bottom-color:var(--ok)}
+.ex-no{font-family:"Oswald","Arial Narrow",sans-serif;font-size:16px;font-weight:700;
+  background:var(--chip);color:var(--chipfg);border-radius:5px;width:28px;height:28px;
+  display:grid;place-items:center;flex:0 0 auto}
+.ex.done .ex-no{background:var(--ok);color:#fff}
+.ex-name{font-size:16.5px;font-weight:700;line-height:1.3;flex:1}
+.extime{flex:0 0 auto;font-family:"Oswald","Arial Narrow",sans-serif;font-size:13px;font-weight:600;
+  color:var(--sub);background:var(--bg);border:2px solid var(--line);border-radius:5px;padding:2px 7px}
+.ex.done .extime{border-color:var(--ok);color:var(--ok)}
+.ex-b{padding:12px}
+
+.wrow{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.stepper{display:flex;align-items:stretch;border-radius:8px;overflow:hidden;border:2px solid var(--text)}
+.stepper button{background:var(--panel);border:none;width:38px;font-size:21px;font-weight:700;
+  color:var(--text);line-height:1}
+.stepper button:active{background:var(--line)}
+.stepper .val{background:var(--chip);color:var(--chipfg);padding:7px 12px;display:flex;
+  align-items:baseline;gap:2px;min-width:96px;justify-content:center}
+.stepper .val .n{font-family:"Oswald","Arial Narrow",sans-serif;font-size:29px;font-weight:700;line-height:1}
+.stepper .val .u{font-size:13px;font-weight:600}
+.target{font-family:"Oswald","Arial Narrow",sans-serif;font-size:22px;font-weight:600;line-height:1.1}
+.target span{font-family:"Noto Sans JP";font-size:12.5px;font-weight:700;color:var(--sub)}
+.restv{margin-left:auto;text-align:right}
+.restv .l{font-size:11px;font-weight:700;color:var(--sub)}
+.restv .v{font-family:"Oswald","Arial Narrow",sans-serif;font-size:20px;font-weight:600;line-height:1}
+.edited{font-size:11.5px;color:var(--hot);font-weight:700;margin-top:5px}
+.edited button{background:none;border:none;color:var(--B);font-weight:700;
+  font-size:11.5px;text-decoration:underline;padding:0 0 0 6px}
+
+.plates{display:flex;align-items:center;gap:4px;margin-top:11px;flex-wrap:wrap}
+.plates .l{font-size:12px;font-weight:700;color:var(--sub);margin-right:2px}
+.pl{font-family:"Oswald","Arial Narrow",sans-serif;font-size:13px;font-weight:700;color:#fff;
+  border-radius:3px;padding:4px 8px}
+.k25{background:#C8102E} .k20{background:#0057B8} .k15{background:#EFB700;color:#000}
+.k10{background:#00843D} .k5{background:#fff;color:#000;border:2px solid var(--text);padding:2px 6px}
+.k2{background:#1A1A1A;border:1px solid var(--line)}
+
+.hint{font-size:11.5px;color:var(--sub);font-weight:500;margin-top:7px}
+.srows{margin-top:11px;display:flex;flex-direction:column;gap:5px}
+.srow{display:flex;align-items:center;gap:6px;border:2px solid var(--line);
+  border-radius:7px;padding:5px 6px 5px 8px;background:var(--bg)}
+.srow.on{background:var(--okbg);border-color:var(--ok)}
+.srow.wu{border-style:dashed;background:var(--panel)}
+.srow.wu.on{border-style:solid;background:var(--okbg)}
+.sn{font-family:"Oswald","Arial Narrow",sans-serif;font-size:14px;font-weight:700;
+  color:var(--sub);min-width:26px;text-align:center;flex:0 0 auto}
+.srow.on .sn{color:var(--ok)}
+.fld{display:flex;align-items:center;gap:2px;flex:1;justify-content:center;min-width:0}
+.fld b{font-family:"Oswald","Arial Narrow",sans-serif;font-size:19px;font-weight:700;
+  min-width:44px;text-align:center;line-height:1}
+.fld i{font-style:normal;font-size:10.5px;font-weight:700;color:var(--sub);margin-right:1px}
+.fld button{background:var(--panel);border:2px solid var(--line);color:var(--text);
+  border-radius:5px;width:30px;height:30px;font-size:16px;font-weight:700;line-height:1;padding:0;flex:0 0 auto}
+.srow.on .fld button{background:var(--bg);border-color:var(--ok)}
+.fld.plain{color:var(--sub)}
+.fld.plain b{font-weight:600;opacity:.75}
+.ck{flex:0 0 auto;width:40px;height:36px;border-radius:6px;border:2px solid var(--line);
+  background:var(--bg);color:var(--sub);font-size:17px;font-weight:700;line-height:1;padding:0}
+.srow.on .ck{background:var(--ok);border-color:var(--ok);color:#fff}
+.plates .l b{color:var(--text)}
+.levelup{margin-top:11px;padding:10px 12px;border-radius:7px;background:var(--okbg);
+  border:2.5px solid var(--ok);font-size:13.5px;font-weight:700;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.levelup .lu-t{flex:1;min-width:150px;line-height:1.45}
+.levelup button{background:var(--ok);color:#fff;border:none;border-radius:6px;
+  padding:8px 13px;font-size:13px;font-weight:700}
+.levelup.wait{background:var(--hotbg);border-color:var(--hot)}
+
+.ssbox{border:3px dashed var(--B);border-radius:8px;padding:11px;background:var(--ssbg)}
+.sslab{font-size:12px;font-weight:900;color:var(--B);margin-bottom:9px}
+.ssrow{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.ssrow+.ssrow{margin-top:8px;padding-top:8px;border-top:2px solid var(--ssln)}
+.ssname{font-size:15px;font-weight:700;flex:1;min-width:104px}
+.sswt{background:var(--chip);color:var(--chipfg);border-radius:6px;padding:5px 10px;
+  font-family:"Oswald","Arial Narrow",sans-serif;font-size:19px;font-weight:700}
+.ssrep{font-family:"Oswald","Arial Narrow",sans-serif;font-size:16px;font-weight:600;min-width:42px;text-align:right}
+.ssw{display:flex;align-items:center;gap:3px;flex:0 0 auto}
+.ssw b{font-family:"Oswald","Arial Narrow",sans-serif;font-size:16px;font-weight:700;
+  min-width:58px;text-align:center;line-height:1}
+.ssw button{background:var(--bg);border:2px solid var(--B);color:var(--text);
+  border-radius:5px;width:28px;height:28px;font-size:15px;font-weight:700;line-height:1;padding:0}
+.ssw button:active{background:var(--ssln)}
+.edm{font-style:normal;font-size:9.5px;font-weight:700;color:var(--hot);
+  background:var(--hotbg);border-radius:3px;padding:1px 4px;margin-left:5px;vertical-align:middle}
+
+.note{margin-top:11px;padding:10px 12px;border-radius:6px;font-size:14px;line-height:1.6;
+  background:var(--hotbg);border-left:5px solid var(--hot);font-weight:500}
+.note.bad{background:var(--warnbg);border-left-color:var(--warn)}
+.formbox{margin-top:11px;padding:9px 12px;border-radius:6px;background:var(--ssbg);
+  border-left:5px solid var(--B);font-size:13.5px;line-height:1.55}
+.fh{display:block;font-size:11px;font-weight:900;color:var(--B);
+  letter-spacing:.06em;margin-bottom:3px}
+.fi{display:block;position:relative;padding-left:13px;font-weight:500}
+.fi::before{content:"▪";position:absolute;left:0;color:var(--B);opacity:.7}
+.note b{font-weight:900}
+
+/* ===== rest timer ===== */
+.fab{position:fixed;right:12px;bottom:16px;z-index:55;
+  display:none;align-items:center;gap:9px;max-width:min(300px,calc(100vw - 24px));
+  background:var(--chip);color:var(--chipfg);border:none;border-radius:30px;
+  padding:9px 16px 9px 9px;box-shadow:0 4px 16px rgba(0,0,0,.3);
+  font-family:"Noto Sans JP",sans-serif;text-align:left;
+  padding-bottom:calc(9px + env(safe-area-inset-bottom));}
+.fab.show{display:flex}
+.fab.up{bottom:calc(74px + env(safe-area-inset-bottom))}
+.fabno{flex:0 0 auto;width:34px;height:34px;border-radius:50%;
+  background:var(--bg);color:var(--text);display:grid;place-items:center;
+  font-family:"Oswald","Arial Narrow",sans-serif;font-size:17px;font-weight:700}
+.fabtx{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+.fabtx b{font-size:13.5px;font-weight:700;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.fabtx i{font-style:normal;font-size:11px;opacity:.8;font-weight:600}
+.timer{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--chip);
+  color:var(--chipfg);transform:translateY(105%);transition:transform .22s;
+  padding-bottom:env(safe-area-inset-bottom)}
+.timer.show{transform:none}
+.timer-in{max-width:640px;margin:0 auto;padding:11px 14px;display:flex;align-items:center;gap:13px}
+.tcount{font-family:"Oswald","Arial Narrow",sans-serif;font-size:38px;font-weight:700;line-height:1;min-width:96px}
+.tcount.zero{color:#12A054}
+.tlabel{font-size:12.5px;font-weight:500;opacity:.85;flex:1;line-height:1.4}
+.tbtn{background:rgba(128,128,128,.3);border:none;color:inherit;border-radius:7px;
+  padding:9px 13px;font-size:14px;font-weight:700}
+.tprog{height:4px;background:rgba(128,128,128,.3)}
+.tprog i{display:block;height:100%;background:#12A054;width:100%;transition:width 1s linear}
+
+/* ===== reference ===== */
+.ref{margin-top:30px}
+.ref-h{font-size:18px;font-weight:900;padding-bottom:8px;border-bottom:3px solid var(--text)}
+details{border-bottom:2px solid var(--line2)}
+summary{font-size:16px;font-weight:700;padding:14px 2px;list-style:none;
+  display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"＋";font-weight:700;color:var(--A)}
+details[open] summary::after{content:"−"}
+.db{padding:0 2px 18px;font-size:15px}
+.db h4{font-size:14px;font-weight:900;margin:15px 0 6px;color:var(--A)}
+.db h4:first-child{margin-top:0}
+.db p{margin-bottom:8px}
+.db ul{list-style:none;margin-bottom:8px}
+.db li{padding:2px 0 2px 17px;position:relative;font-weight:500}
+.db li::before{content:"▪";position:absolute;left:2px;color:var(--sub)}
+table{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:10px}
+th{background:var(--chip);color:var(--chipfg);text-align:left;font-weight:700;font-size:13px;padding:7px 9px}
+td{padding:8px 9px;border-bottom:2px solid var(--line2);vertical-align:top;font-weight:500}
+tr:nth-child(even) td{background:var(--panel)}
+.num{font-family:"Oswald","Arial Narrow",sans-serif;font-size:17px;font-weight:600}
+.hidden{display:none}
+.savenote{font-size:12px;color:var(--sub);text-align:center;margin-top:18px;font-weight:500}
+.howto{margin-top:14px;border:2.5px solid var(--text);border-radius:9px;padding:14px;background:var(--panel)}
+.howto h4{font-size:15px;font-weight:900;margin-bottom:9px}
+.howto ol{margin:0 0 9px 18px;font-size:14px}
+.howto li{padding:4px 0;font-weight:500}
+.howto li span{display:block;font-size:12.5px;color:var(--sub);font-weight:400;margin-top:2px}
+.howto p{font-size:13px;color:var(--sub);font-weight:500}
+.hcard{border:2px solid var(--line);border-radius:8px;margin-bottom:9px;overflow:hidden}
+.hhead{display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  background:var(--panel);padding:8px 11px;border-bottom:2px solid var(--line)}
+.hd{font-family:"Oswald","Arial Narrow",sans-serif;font-size:17px;font-weight:700}
+.hm{font-size:14px;font-weight:700}
+.hs{font-size:11px;font-weight:700;background:var(--chip);color:var(--chipfg);
+  border-radius:4px;padding:1px 7px}
+.hn{margin-left:auto;font-size:12px;color:var(--sub);font-weight:600}
+.hbody{padding:4px 11px 8px}
+.hrow{display:flex;gap:10px;align-items:baseline;padding:4px 0;
+  border-bottom:1px solid var(--line2)}
+.hrow:last-child{border-bottom:none}
+.hex{font-size:13.5px;font-weight:600;flex:1;min-width:0}
+.hrec{font-family:"Oswald","Arial Narrow",sans-serif;font-size:15px;font-weight:600;
+  text-align:right;white-space:nowrap}
+.freqsw{display:flex;gap:5px;margin-bottom:11px}
+.freqsw button{flex:1;background:var(--bg);border:2px solid var(--line);color:var(--sub);
+  border-radius:6px;padding:7px 2px;font-size:13px;font-weight:700}
+.freqsw button.sel{background:var(--chip);color:var(--chipfg);border-color:var(--chip)}
+.voltbl{margin-top:12px}
+.volrow{padding:9px 0;border-bottom:2px solid var(--line2)}
+.volrow:last-child{border-bottom:none}
+.vhead{display:flex;align-items:baseline;gap:8px}
+.vp{font-size:14.5px;font-weight:900;min-width:36px}
+.vv{font-family:"Oswald","Arial Narrow",sans-serif;font-size:21px;font-weight:700}
+.vv i{font-style:normal;font-size:11px;font-weight:500;color:var(--sub);margin-left:1px}
+.vs{margin-left:auto;font-size:11.5px;font-weight:700;border-radius:4px;padding:2px 8px}
+.vs.ok{background:var(--okbg);color:var(--ok)}
+.vs.lo{background:var(--hotbg);color:var(--hottx)}
+.vs.hi{background:var(--warnbg);color:var(--warn)}
+.vbar{position:relative;height:12px;background:var(--panel);border-radius:6px;margin-top:6px;
+  border:1px solid var(--line)}
+.vrange{position:absolute;top:0;bottom:0;background:var(--okbg);border-radius:3px;
+  border-left:2px solid var(--ok);border-right:2px solid var(--ok)}
+.vmark{position:absolute;top:-3px;bottom:-3px;width:4px;border-radius:2px;
+  transform:translateX(-2px);background:var(--text)}
+.vmark.lo{background:var(--hot)} .vmark.hi{background:var(--warn)} .vmark.ok{background:var(--ok)}
+.vnum{font-size:11px;color:var(--sub);font-weight:600;margin-top:4px}
+.calgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px}
+.cald{border:2px solid var(--line);border-radius:6px;padding:6px 4px;text-align:center;
+  display:flex;flex-direction:column;gap:1px;min-width:0}
+.cald.off{background:var(--panel);border-style:dashed;opacity:.7}
+.cald.ga{border-color:var(--A)} .cald.gb{border-color:var(--B)}
+.cald.gs{border-color:var(--S)} .cald.gd{border-color:var(--D)}
+.cd{font-family:"Oswald","Arial Narrow",sans-serif;font-size:16px;font-weight:700}
+.cd i{font-style:normal;font-size:10px;font-weight:600;color:var(--sub);margin-left:2px}
+.cg{font-size:11.5px;font-weight:700;white-space:nowrap}
+.cald.ga .cg{color:var(--A)} .cald.gb .cg{color:var(--B)}
+.cald.gs .cg{color:var(--S)} .cald.gd .cg{color:var(--D)}
+.cs{font-size:10px;color:var(--sub);font-weight:600}
+.hbtns{display:flex;gap:7px;margin-top:6px}
+.hclear{flex:1;background:var(--panel);border:2px solid var(--line);color:var(--text);
+  border-radius:7px;padding:10px;font-size:13px;font-weight:700}
+
+.pacts{display:flex;gap:7px;margin-top:10px}
+.pact{flex:1;background:rgba(255,255,255,.2);border:none;color:inherit;border-radius:6px;
+  padding:8px 6px;font-size:13px;font-weight:700}
+.pact.fin{background:rgba(255,255,255,.9);color:#0D1117}
+body.dark .pact.fin{background:rgba(0,0,0,.35);color:#F3F6F9}
+.pact.fin.ready{background:#fff;color:#0D1117;box-shadow:0 0 0 3px rgba(255,255,255,.45)}
+body.dark .pact.fin.ready{background:#0E1218;color:#F3F6F9;box-shadow:0 0 0 3px rgba(0,0,0,.4)}
+body.dark .pact{background:rgba(0,0,0,.18)}
+.lastrec{font-size:12px;color:var(--sub);font-weight:600;margin-top:8px}
+.lastrec b{color:var(--text);font-weight:800}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="mast">
+    <div class="mtxt">
+      <h1>3分割 A → B → D</h1>
+      <p class="sub">メンズフィジーク方向／カット期　80kg・FFMI 23.2・ベンチ1RM 110kg</p>
+    </div>
+    <button class="themebtn" id="themebtn" title="表示切替">☀</button>
+  </header>
+
+  <section class="next">
+    <div class="next-h" id="todayHead">今日の予定</div>
+    <div class="todaybar" id="todaybar"></div>
+    <div class="next-b">
+      <div class="next-badge" id="nb"><span id="nbk">A</span></div>
+      <div class="next-txt"><div class="t" id="nt">プッシュ</div><div class="s" id="ns">胸・肩・三頭</div></div>
+      <button class="advance" id="adv">完了<br>→次へ</button>
+    </div>
+    <div class="cyclerow">
+      <div class="cchip a" data-c="a">A 胸</div>
+      <div class="cchip b" data-c="b">B 背中</div>
+      <div class="cchip d" data-c="d">D 脚</div>
+      <div class="cchip s" data-c="s" id="chipS">S 肩腕</div>
+    </div>
+  </section>
+
+  <div class="slots">
+    <div class="slot off"><span class="t">A・Dの日</span><span class="d">早朝勤務（1:30起床）／完全オフ</span></div>
+  </div>
+</div>
+
+<nav class="tabbar">
+  <div class="bar-in">
+    <div class="splitsw" id="splitsw">
+      <button data-split="3">3分割<span class="s">週5回・中3.3日</span></button>
+      <button data-split="4">4分割<span class="s">週6回・中3.7日</span></button>
+    </div>
+    <div class="slotsw" id="slotsw">
+      <button data-slot="full">休みの日（C・空欄）<span class="s">午前 ／ フル版</span></button>
+      <button data-slot="short">短縮日（B）<span class="s">早朝4:50 ／ 50分以内</span></button>
+    </div>
+  </div>
+  <div class="tabs" id="tabs"></div>
+</nav>
+
+<div class="wrap"><div id="panels"></div>
+
+<div class="ref">
+  <div class="ref-h">運用ルール</div>
+
+<details><summary>重量の進め方</summary><div class="db">
+<h4>ダブルプログレッション</h4>
+<ul><li>レップ範囲の<b>上限を全セットで達成</b>したら重量を上げる</li>
+<li>上げ幅：コンパウンド 2.5kg／アイソレーション 1〜2kg</li>
+<li>上げた直後はレップ下限に落ちる。そこからまた積む</li></ul>
+<p>例：ベンチ 90kg で 8/8/8/8 → <b>92.5kg</b> → 6/6/5/5 から再スタート</p>
+<h4>カット中の期待値</h4>
+<table><tr><th>状況</th><th>対応</th></tr>
+<tr><td>2週続けて上限に届かない</td><td>その重量で<b>維持</b>と割り切る</td></tr>
+<tr><td><b>2回連続</b>で全セット上限達成</td><td>重量を上げる</td></tr>
+<tr><td>ベンチの想定レンジ</td><td class="num">90 – 95kg</td></tr></table>
+<p><b>90kgを維持できていれば、筋量が保たれている証拠。</b>1RM 110kgのレベルでカット中に伸び続けることはない。</p>
+<h4>記録の扱い</h4>
+<ul><li>記録更新の判定は<b>休みの日枠のみ</b></li>
+<li>早朝枠は別ログ。5〜10%低いのが正常</li></ul>
+</div></details>
+
+<details><summary>種目選択の原則</summary><div class="db">
+<h4>固定する（変更しない）</h4>
+<table><tr><th>枠</th><th>種目</th></tr>
+<tr><td>A フル 1・2</td><td>ベンチ／インクラインバーベル</td></tr>
+<tr><td>B フル 1・2</td><td>懸垂／ラットプルダウン</td></tr>
+<tr><td>D フル 1・2</td><td>スクワット／レッグプレス</td></tr></table>
+<p>記録更新の指標。頻繁に変えると進捗が測れない。3番目以降は混雑時や飽きた時に自由に入れ替えてよい。</p>
+<h4>順番の考え方（研究ベース）</h4>
+<ul>
+<li><b>筋肥大に順番はほぼ影響しない</b>。11研究268名のメタ分析で、多関節先行と単関節先行で肥大の差なし（ES=0.03, p=0.862）</li>
+<li><b>筋力は先にやった種目が伸びる</b>。特異性の効果。だから記録を追う種目を先頭に置く</li>
+<li>実務上は後半ほど集中力が落ちるため、<b>優先部位を先に</b>置く意味はある</li>
+</ul>
+<p>この3点から、各日は <b>記録種目 → 優先部位 → 補助</b> の順に並べてある。<br>
+A＝胸4 → 三頭2　／　B＝広がり → 後鎖 → 厚み → 肩後　／　S＝肩5 → 二頭3　／　D＝四頭4 → ハム臀2</p>
+<h4>リストストラップについて</h4>
+<p>Bの日は握力を使う種目が5つ続く。背中が限界に達する前に手が離れるのは、背中のトレーニングとして機能していない。</p>
+<ul>
+<li><b>使う種目</b>：バーベルロウ／シーテッドロウ／プルダウン（Bの日）、RDL（Dの日）</li>
+<li><b>使わない種目</b>：懸垂（握力も含めた総合力を測る指標なので素手で）</li>
+<li>1,500〜2,500円程度。8の字型よりベルクロ式が着脱しやすい</li>
+</ul>
+<p><b>握力を鍛えたいなら専用種目でやる。</b>背中の日に握力をボトルネックにするのは損。</p>
+<h4>ストラップが届くまで</h4>
+<table><tr><th>種目</th><th>暫定対応</th></tr>
+<tr><td>RDL（Dの日）</td><td>60kgに落として10-12回。フォーム優先</td></tr>
+<tr><td>バーベルロウ</td><td>50kgに落とすか、ワンハンドロウに置換</td></tr>
+<tr><td>シーテッドロウ</td><td>そのまま。マシンなので負担は軽い</td></tr></table>
+<h4>余裕がある日に足す種目</h4>
+<p>調子が良く時間もある日だけ。<b>固定で増やさない</b>のが原則。カット中は回復が律速になる。</p>
+<table><tr><th>日</th><th>追加候補</th><th>+時間</th></tr>
+<tr><td><b>A</b></td><td>ダンベルフライ 3セット（胸の伸展位を厚く）</td><td>+6分</td></tr>
+<tr><td><b>B</b></td><td>ワンハンドダンベルロウ 3セット（厚み）</td><td>+7分</td></tr>
+<tr><td><b>S</b></td><td>ケーブルサイドレイズを1セット追加</td><td>+2分</td></tr>
+<tr><td><b>D</b></td><td>スタンディングレッグカール 3セット（ハム）</td><td>+6分</td></tr></table>
+<p>やった日は履歴のメモに残らないので、増やしたことを覚えておく必要はない。<br>
+<b>翌日の疲労が普段より強ければ、その追加は自分に合っていない。</b></p>
+<h4>時間が足りない日に削る順</h4>
+<table><tr><th>日</th><th>削る順</th></tr>
+<tr><td><b>A</b></td><td>6. 三頭締め → 4. ディップス → 3. ケーブルフライ</td></tr>
+<tr><td><b>B</b></td><td>6. フェイスプル → 5. シーテッドロウ → 4. ラットプルダウン</td></tr>
+<tr><td><b>S</b></td><td>8. 腕＋僧帽 → 5. ダンベルリアレイズ → 7. インクラインカール</td></tr>
+<tr><td><b>D</b></td><td>6. レッグカール → 5. ヒップスラスト → 3. ブルガリアン</td></tr></table>
+<p><b>各日の 1・2番は削らない。</b>ここが記録更新の指標。<br>
+それでも足りなければ 1・2番を1セット減らす。種目を丸ごと飛ばすより影響が小さい。</p>
+<h4>各日の所要時間（W/U 12分込み）</h4>
+<table><tr><th>メニュー</th><th>目安</th><th>枠</th></tr>
+<tr><td>A フル</td><td class="num">84分</td><td>90分以内</td></tr>
+<tr><td>B フル</td><td class="num">86分</td><td>90分以内</td></tr>
+<tr><td>D フル</td><td class="num">68分</td><td>90分以内</td></tr>
+<tr><td>A 圧縮</td><td class="num">47分</td><td>50分（W/Uは家）</td></tr>
+<tr><td>B 圧縮</td><td class="num">48分</td><td>50分</td></tr>
+<tr><td>D 圧縮</td><td class="num">51分</td><td>55分</td></tr></table>
+<h4>使わない種目</h4>
+<table><tr><th>種目</th><th>理由</th></tr>
+<tr><td>ワイドグリップ<br>バーベルベンチ</td><td>肩の外転角度が増え腱板・肩鎖関節への負担大。胸の外側はマシン・フライで代替可</td></tr>
+<tr><td>バーベルOHP<br>（早朝のみ）</td><td>低体温＋立位オーバーヘッドはリスク大</td></tr>
+<tr><td>フリースクワット<br>（早朝のみ）</td><td>低体温＋ひとりで潰れたときに逃げ場がない。早朝はスミスマシンで代替する</td></tr>
+<tr><td>加重アブクランチ<br>ロータリートルソ</td><td>腹直筋・腹斜筋が厚くなりウエストが太く見える。フィジークのVシェイプに逆行する。体幹はスクワット・RDL・ロウで十分</td></tr></table>
+<h4>早朝のコンパウンド基準</h4>
+<p>起床直後は椎間板の水分量が最大で、<b>脊柱屈曲＋高負荷</b>の組み合わせが最も危険。仰臥位や片手支持の種目にはこのリスクがない。種目ごとに切り分ける。</p>
+<table><tr><th>種目</th><th>早朝</th><th>理由</th></tr>
+<tr><td>バーベルベンチ</td><td>◎ 使う</td><td>仰臥位。脊柱屈曲なし</td></tr>
+<tr><td>加重懸垂</td><td>◎ 使う</td><td>懸垂は牽引方向。椎間板は減圧される</td></tr>
+<tr><td>スミス スクワット</td><td>○ 使う</td><td>軸圧はあるが屈曲は小さい。軌道固定で安全性を確保</td></tr>
+<tr><td>ワンハンドロウ</td><td>○ 使う</td><td>片手支持で脊柱の負担が小さい</td></tr>
+<tr><td>フリー スクワット</td><td>△ 避ける</td><td>低体温＋ひとりで潰れるリスク。スミスで代替</td></tr>
+<tr><td>RDL／デッドリフト</td><td>✕ 使わない</td><td>脊柱屈曲＋高負荷。起床1時間以内は椎間板圧が最大</td></tr>
+<tr><td>ベントオーバーロウ</td><td>✕ 使わない</td><td>同上。前傾保持が長い</td></tr>
+<tr><td>立位OHP</td><td>✕ 使わない</td><td>低体温での頭上高重量は肩と腰のリスク</td></tr></table>
+<p><b>重量はフル版の約9割から。</b>低体温で神経出力が落ちるため、回数を1〜2回減らして重量を守る。<b>W/U 12分とランプアップは絶対に削らない。</b></p>
+<h4>機材が使えないときの代替</h4>
+<table><tr><th>使えない機材</th><th>代替</th></tr>
+<tr><td>パワーラック<br>（2台とも埋まり）</td><td>ベンチ・インクライン→<b>スミスマシンで代用可</b>。スクワットもスミスで。<br>RDLはラック不要（床から引ける）ので先に済ませる<br>※ スミスはバー重量が機種で違う。フリーとは記録を分ける</td></tr>
+<tr><td>インクラインベンチ</td><td>リアレイズ→立位前傾かケーブル<br>インクラインカール→スタンディングで角度を作る</td></tr>
+<tr><td>デュアルプーリー</td><td>ケーブルフライ→ダンベルフライ<br>サイドレイズ→ダンベルでセット数を増やす</td></tr>
+<tr><td>プリチャー台</td><td>インクラインベンチの背もたれを使って同じ角度を作る</td></tr>
+<tr><td>レッグエクステンション<br>／レッグカール</td><td>各1台のみ。混雑時はスーパーセットを解いて個別に</td></tr></table>
+<p><b>Sの日はインクラインベンチを3種目で使う</b>（ショルダープレス・リアレイズ・インクラインカール）。混雑時は長時間占有になるので、間に他の種目を挟むか代替に切り替える。</p>
+<h4>加古川駅前店のマシン</h4>
+<table><tr><th>マシン</th><th>用途</th></tr>
+<tr><td>ワイドチェストプレス</td><td>A-4。胸の外側</td></tr>
+<tr><td>デュアルペクトラル<br>リバースフライ</td><td>B-7。リアデルト</td></tr>
+<tr><td>ニーリングイージー<br>チンディップ</td><td>懸垂の追い込み</td></tr>
+<tr><td>デュアルアジャスタブル<br>プーリー</td><td>ケーブルサイドレイズ／フライ</td></tr>
+<tr><td>プリチャーカール台</td><td>B フル 8番目。ブラキアリス</td></tr>
+<tr><td>エルコリナ</td><td>実機を確認。胸用ならインクラインの代替候補</td></tr></table>
+</div></details>
+
+<details><summary>タイムライン</summary><div class="db">
+<h4>短縮日 ／ 6:15帰宅</h4>
+<table>
+<tr><td class="num">4:00</td><td>起床、水500ml</td></tr>
+<tr><td class="num">4:10</td><td>バナナ1本＋EAA</td></tr>
+<tr><td class="num">4:20</td><td><b>家でウォームアップ 5分</b>（足踏み・肩甲骨・股関節）</td></tr>
+<tr><td class="num">4:30</td><td>出発</td></tr>
+<tr><td class="num">4:50</td><td>ジム着 → ランプアップ4分</td></tr>
+<tr><td class="num">4:54</td><td>トレーニング開始</td></tr>
+<tr><td class="num">5:40</td><td>終了・シャワー・着替え</td></tr>
+<tr><td class="num">5:55</td><td>ジム発</td></tr>
+<tr><td class="num">6:15</td><td>帰宅・朝食</td></tr>
+<tr><td class="num">7:30</td><td>職場着</td></tr></table>
+<p><b>実働は 4:54〜5:40 の46分。</b>ジムでのランプアップ4分を含めて50分。<br>
+就寝は<b>21:00目標</b>（7時間確保）。崩れる週は短縮日のトレを1回スキップ。</p>
+<div class="note bad"><b>4:00起床を週2〜3回。</b>睡眠が6時間を切る週が続いたら、頻度より睡眠を優先する。<br>
+カット期に睡眠不足が重なると、減るのが脂肪ではなく筋肉になる。</div>
+<h4>休みの日枠 ／ 90分</h4>
+<table>
+<tr><td class="num">7:00</td><td>通常の朝食一式</td></tr>
+<tr><td class="num">9:00</td><td>トレ開始</td></tr>
+<tr><td class="num">10:00</td><td>EAA追加（Bの日はマルトデキストリン20g）</td></tr>
+<tr><td class="num">10:30</td><td>終了</td></tr>
+<tr><td class="num">10:50</td><td>プロテイン＋炭水化物</td></tr>
+<tr><td class="num">12:30</td><td>昼食</td></tr></table>
+<p>90分でも後半はグリコーゲンが薄くなる。カット中なので中間の補給は入れておく。</p>
+</div></details>
+
+<details><summary>栄養 ／ カット期</summary><div class="db">
+<table><tr><th></th><th>トレ日</th><th>オフ日</th></tr>
+<tr><td>カロリー</td><td class="num">2,200</td><td class="num">2,050</td></tr>
+<tr><td>タンパク質</td><td class="num">160g</td><td class="num">160g</td></tr>
+<tr><td>脂質</td><td class="num">45-50g</td><td class="num">45-50g</td></tr>
+<tr><td>炭水化物</td><td class="num">280g</td><td class="num">230g</td></tr></table>
+<ul><li>炭水化物はトレ前後に厚く配置</li>
+<li>納豆・キムチ・アカモク・ヨーグルトはトレ後の食事へ</li>
+<li>早朝勤務日＝オフ日として扱う</li></ul>
+</div></details>
+
+<details><summary>膝について</summary><div class="db">
+<p>整形外科で<b>構造的な異常なし</b>と確認済み。制限を外して通常運用に戻している。</p>
+<h4>守ること</h4>
+<ul>
+<li>深さは<b>パラレル</b>まで。浅いスクワットは膝蓋大腿関節へのストレスがかえって高い</li>
+<li>膝と爪先の向きを揃える。膝が内に入らない</li>
+<li>レッグプレスは腰が浮かない範囲まで</li>
+<li>レッグエクステンションは反動を使わない</li>
+</ul>
+<h4>再受診の目安</h4>
+<ul><li>特定の角度で鋭い痛みが出る</li><li>階段の下りで痛む</li><li>腫れ・熱感・引っかかり感がある</li></ul>
+<p>いずれかが出たら重量を落として様子を見る。改善しなければ受診する。「異常なし」は診断時点の話で、負荷を上げた後も同じとは限らない。</p>
+</div></details>
+
+<details><summary>見直しの判断基準</summary><div class="db">
+<p>3週間続けて確認する。</p>
+<table><tr><th>項目</th><th>OK</th><th>NGなら</th></tr>
+<tr><td>ベンチ90kg</td><td>横ばい以上</td><td>カロリーか睡眠を疑う</td></tr>
+<tr><td>日中の眠気</td><td>悪化なし</td><td>早朝を週1回に</td></tr>
+<tr><td>睡眠時間</td><td>平均7時間</td><td>頻度より睡眠を優先</td></tr>
+<tr><td>膝の痛み</td><td>0〜2/10</td><td>重量を1段階下げる</td></tr>
+<tr><td>スクワット</td><td>フォーム維持</td><td>重量を下げて深さを守る</td></tr>
+<tr><td>筋肉痛</td><td>次回までに引く</td><td>オフを1日追加</td></tr></table>
+<div class="note bad"><b>睡眠が削れる週は、食事より先にトレ頻度を落とす。</b><br>カット期に睡眠不足が重なると、減るのが脂肪ではなく筋肉になる。</div>
+</div></details>
+
+<details><summary>増量期への移行</summary><div class="db">
+<table><tr><th>項目</th><th>変更内容</th></tr>
+<tr><td>カロリー</td><td>2,700-2,800</td></tr>
+<tr><td>炭水化物</td><td>350-380g（タンパク質160gは据え置き）</td></tr>
+<tr><td>A フル</td><td>3番目をスタンディングOHP（55kg）に</td></tr>
+<tr><td>D フル</td><td>RDL ⇄ デッドリフト を隔週交互</td></tr>
+<tr><td>D フル</td><td>スクワットを 5×5 に。重量を追う</td></tr>
+<tr><td>圧縮版</td><td>変更なし</td></tr>
+<tr><td>セット数</td><td>休みの日枠で胸・背中を各+3〜4</td></tr></table>
+<p>ベンチは増量期6ヶ月で1RM 120kg前後が現実的な射程。スクワットも増量期に入れば 100kg 台が視野に入る。</p>
+</div></details>
+
+<details><summary>ボリューム診断</summary><div class="db" id="vol"></div></details>
+
+<details><summary>9月のスケジュール</summary><div class="db" id="cal"></div></details>
+
+<details><summary>トレーニング履歴</summary><div class="db" id="hist"></div></details>
+</div>
+
+<p class="savenote" id="savenote">記録は自動保存されています</p>
+
+<div class="howto">
+  <h4>ホーム画面に追加する</h4>
+  <ol>
+    <li>この画面を <b>端末のブラウザ</b>で開く<br><span>Claudeアプリで見ている場合は、ファイルをダウンロードして「ファイル」アプリから開くか、右上のメニューにブラウザで開く項目がないか確認</span></li>
+    <li>ブラウザの <b>共有／メニュー</b>ボタンをタップ<br><span>iPhone Safari＝下部中央の共有アイコン／Android Chrome＝右上の「⋮」</span></li>
+    <li><b>「ホーム画面に追加」</b>を選ぶ</li>
+  </ol>
+  <p>ホーム画面から開けばアイコン1タップで起動でき、チェック・重量の記録も端末に保存されます。</p>
+</div>
+</div>
+
+<button class="fab" id="fab" aria-label="いまの種目へ">
+  <span class="fabno" id="fabno">1</span>
+  <span class="fabtx"><b id="fabname">—</b><i id="fabset"></i></span>
+</button>
+
+<div class="timer" id="timer">
+  <div class="tprog"><i id="tprog"></i></div>
+  <div class="timer-in">
+    <div class="tcount" id="tcount">0:00</div>
+    <div class="tlabel" id="tlabel"></div>
+    <button class="tbtn" id="tadd">＋30秒</button>
+    <button class="tbtn" id="tstop">停止</button>
+  </div>
+</div>
+
+<script>
+/* ============ データ ============ */
+const P = (n,u)=>({n,u:u||'kg'});
+const PLAN = {
+// ===== A：プッシュ（胸・三頭） =====
+ af:{g:'a',tag:'休みの日／フル',title:'A ｜ プッシュ',meta:'胸・三頭｜プレス2＋ストレッチ2の構成',
+  warm:{items:['バイク 5分','肩甲骨・肩関節ストレッチ 3分','ベンチ ランプアップ 4分'],
+        ramp:{l:'ベンチ ランプアップ',v:'20×15 → 50×8 → 70×5 → 82.5×3'}},
+  ex:[
+   {id:'af1',name:'バーベルベンチプレス',w:90,step:2.5,sets:4,rest:180,
+    setReps:['8','7-8','6-7','5-6'],
+    note:'全セット8回が揃ったら <b>92.5kg</b> へ。後半が5回まで落ちるのは正常。'},
+   {id:'af2',name:'インクラインバーベルプレス',w:70,step:2.5,sets:3,reps:'6-10',rest:150,
+    note:'上部胸筋。ランプアップ：40×8 → 55×5<br><b>スミスマシンでも可。</b>ひとりで潰れてもフックに逃がせるので追い込みやすい。ただし<b>バー重量が機種で違う</b>ので初回に実測し、フリーとは記録を分ける。<br>ラックもスミスも埋まっていたらインクラインダンベルプレス（32kg×2）で代替。'},
+   {id:'afC',name:'ケーブルフライ（ロー→ハイ）',w:10,step:2.5,sets:3,reps:'12-15',rest:75,
+    note:'デュアルプーリーを<b>下から上へ</b>。上部胸筋を伸展位で狙える数少ない種目。<br>ダンベルフライと違い、寄せきった位置でも張力が抜けない。<br><b>下で2秒止める。</b>セット数を増やさずに伸展位の刺激を強められる。<br>2週間試して物足りなければダンベルフライ3セットを追加する。'},
+   {id:'af7',name:'ディップス（加重）',w:0,unit:'kg加重',step:2.5,sets:2,reps:'6-10',rest:90,
+    note:'下部胸筋。<b>前傾姿勢</b>で胸狙い。垂直だと三頭に逃げる。'},
+   {id:'af8',name:'スカルクラッシャー（EZバー）',w:20,step:2.5,sets:4,reps:'8-12',rest:75,
+    note:'三頭<b>長頭</b>。額ではなく頭の後ろへ下ろすと伸展位が深くなる。<br>肘に痛みが出るならオーバーヘッドエクステンションへ。'},
+   {id:'af9',name:'三頭 締め',ss:{lab:'スーパーセット × 3組／インターバル 1:15',sets:3,rest:75,
+    rows:[{k:'af9a',n:'OHエクステンション',w:12,u:'kg',st:2,r:'12-15'},
+          {k:'af9b',n:'プレスダウン',w:12.5,u:'kg',st:2.5,r:'15-20'}]}}
+  ]},
+
+ as:{g:'a',tag:'短縮日 早朝',title:'A ｜ プッシュ 短縮',meta:'ベンチ＋インクラインの2本柱｜W/Uは家で',
+  warm:{h:'ジムでのウォームアップ 4分 ／ 家で体を温めてから来る',
+        items:['家：足踏み5分＋肩甲骨・肩関節を回す','ジム：ベンチのランプアップのみ'],
+        ramp:{l:'ベンチ ランプアップ（省略不可）',v:'20×15 → 40×10 → 55×6 → 65×4 → 72.5×2'}},
+  ex:[
+   {id:'as5',name:'バーベルベンチプレス',w:80,step:2.5,sets:4,reps:'5-8',rest:150,
+    note:'早朝は<b>フル版の約9割</b>。回数を1〜2回減らして重量を守る。記録更新の判定はしない。',
+    bad:'<b>早朝はランプアップを省略しない。</b>低体温で神経系が立ち上がっていない。セーフティは胸の高さにセット。'},
+   {id:'as6',name:'インクラインダンベルプレス',w:24,unit:'kg×2',step:2,sets:4,reps:'8-12',rest:120,
+    note:'上部胸筋。ベンチ角度は<b>30度</b>。ベンチ後なので重量は控えめに。'},
+   {id:'asW',name:'ワイドチェストプレス（マシン）',w:45,step:2.5,sets:3,reps:'10-12',rest:90,
+    note:'外側・広がり。マシンなので早朝でも安全に追い込める。'},
+   {id:'as4',name:'胸＋三頭',ss:{lab:'スーパーセット × 4組／インターバル 1:15',sets:4,rest:75,
+    rows:[{k:'as4a',n:'ダンベルフライ',w:14,u:'kg×2',st:2,r:'12-15'},
+          {k:'as4b',n:'プレスダウン',w:12.5,u:'kg',st:2.5,r:'15-20'}]}}
+  ]},
+
+// ===== B：プル（背中・後鎖） =====
+ bf:{g:'b',tag:'休みの日／フル',title:'B ｜ プル',meta:'背中・後鎖｜広がり2＋厚み2のバランス構成',
+  warm:{items:['バイク 5分','肩甲骨・広背筋・股関節 3分','自重懸垂 → 加重で漸増 4分'],
+        ramp:{l:'懸垂 ウォームアップ',v:'アシスト機で10回 → 自重で3回 → 本番'}},
+  ex:[
+   {id:'bf3',name:'懸垂（自重）',w:0,unit:'kg加重',step:2.5,sets:4,reps:'6-10',rest:150,
+    note:'背中の<b>広がり</b>がフィジークの評価軸。最も新鮮な状態でここに当てる。<br>5回を切ったら<b>アシスト機</b>に切り替えて8-10回まで回す。<br>▶ 全5セットで10回が揃ったら <b>+2.5kg</b> の加重へ。<br>▶ アシストを使った組は <b>−</b> でマイナス表示にして記録。',
+    bad:'<b>反動で振らない。</b>勢いをつけると肩と肘に負担がかかる。回数が出ないならアシスト機を使う。'},
+   {id:'bf4',name:'ワイドグリップ ラットプルダウン',w:50,step:2.5,sets:3,reps:'10-12',rest:90,
+    note:'懸垂が自重で固定される間は、<b>ここで漸進性過負荷を稼ぐ</b>。刻みは2.5kg。'},
+   {id:'bf2',name:'バーベルロウ',w:60,step:2.5,sets:4,reps:'6-10',rest:150,
+    note:'厚みの種目。間にプルダウンを挟むことで腰と握力が回復する。<br><b>ストラップ推奨。</b>ない日は50kgに落とすか、ワンハンドダンベルロウ（片手ずつなので握力の負担が半分）に置き換える。<br>ランプアップ：40×8 → 50×5',
+    bad:'<b>腰が丸まったらそのセットは終了。</b>前傾を保つのがきつくなったら重量を落とす。回数より姿勢を優先する。'},
+   {id:'bfS',name:'シーテッドロウ（ナロー）',w:45,step:2.5,sets:2,reps:'10-12',rest:90,
+    note:'背中の<b>厚み</b>。僧帽筋中部・菱形筋を担当。<br>肩甲骨を寄せきってから1秒止める。腕で引かない。'},
+   {id:'bfV',name:'フェイスプル（ロープ）',w:20,step:2.5,sets:3,reps:'15-20',rest:60,
+    note:'肩の後部＋<b>回旋腱板</b>。プレス系で内旋しがちな肩を外旋方向で整える。<br>Sの日のリバースフライとは軌道が違うので重複しない。<br>顔の高さで引き、肘を高く保つ。'}
+  ]},
+
+ bs:{g:'b',tag:'短縮日 早朝',title:'B ｜ プル 短縮',meta:'懸垂が主役。ベントオーバーロウは早朝に入れない',
+  warm:{h:'ジムでのウォームアップ 4分 ／ 家で体を温めてから来る',
+        items:['家：足踏み5分＋肩甲骨・広背筋をほぐす','ジム：アシスト機で10回 → 自重で3回'],
+        ramp:{l:'懸垂 ウォームアップ（省略不可）',v:'アシスト機×10 → 自重×3 → 本番'}},
+  ex:[
+   {id:'bs5',name:'懸垂（自重）',w:0,unit:'kg加重',step:2.5,sets:4,reps:'5-8',rest:150,
+    note:'早朝は低体温で回数が落ちるので <b>5-8回</b> 設定。回らなくなったら<b>アシスト機</b>へ。休みの日枠と回数を比べない。'},
+   {id:'bs1',name:'ラットプルダウン（ワイド）',w:50,step:2.5,sets:3,reps:'8-12',rest:90,wu:'30kg'},
+   {id:'bsS',name:'シーテッドロウ（ナロー）',w:45,step:2.5,sets:3,reps:'10-12',rest:90,
+    note:'背中の厚み。マシンなので早朝でも脊柱への負担が小さい。'},
+   {id:'bsR',name:'ワンハンドダンベルロウ',w:22,step:2,sets:3,reps:'10-12',rest:90,
+    note:'片手支持なので脊柱への負担が小さい。早朝のロウはこれを使う。'},
+   {id:'bs7',name:'背中 締め',ss:{lab:'スーパーセット × 3組／インターバル 1:00',sets:3,rest:60,
+    rows:[{k:'bs7a',n:'リバースフライ',w:5,u:'kg',st:2,r:'15-20'},
+          {k:'bs7b',n:'ダンベルシュラッグ',w:24,u:'kg×2',st:2,r:'12-15'}]}}
+  ]},
+
+// ===== S：肩・腕 =====
+ sf:{g:'s',tag:'休みの日／フル',title:'S ｜ 肩・腕',meta:'疲労のない状態で肩と腕に集中｜中部と後部が評価軸',
+  warm:{items:['バイク 5分','肩甲骨・肩関節・回旋腱板 4分','ダンベル軽めで肩を温める 3分'],
+        ramp:{l:'ショルダープレス ランプアップ',v:'12kg×12 → 16kg×8 → 本番20kg'}},
+  ex:[
+   {id:'sf1',name:'シーテッド ダンベルショルダープレス',w:20,unit:'kg×2',step:2,sets:4,reps:'8-12',rest:120,wu:'12kg',
+    note:'肩の日の唯一のコンパウンド。<br><b>翌日がAの日</b>なので、前部を潰しすぎない。限界1回手前で止める。'},
+   {id:'sf2',name:'ケーブルサイドレイズ（片手）',w:5,step:1,sets:5,reps:'15-20',rest:75,
+    note:'三角筋<b>中部</b>が肩の丸みと横幅をつくる。フィジークの最重要部位なので新鮮な状態で先に。<br>下ろした位置でも負荷が抜けないのがケーブルの利点。'},
+   {id:'sf3',name:'ダンベルサイドレイズ',w:8,unit:'kg×2',step:1,sets:5,reps:'15-20',rest:60,
+    note:'最終セットのみドロップセット可 ── <b>8 → 6 → 4kg</b> を連続で。'},
+   {id:'sf4',name:'デュアルペクトラルリバースフライ',w:5,step:2.5,sets:5,reps:'10-15',rest:75,
+    note:'三角筋<b>後部</b>。横から見た立体感をつくる。<br>リアレイズとフェイスプルが高レップなので、ここは<b>中重量域</b>で刺激を変える。'},
+   {id:'sf5',name:'ダンベルリアレイズ（インクライン うつ伏せ）',w:6,unit:'kg×2',step:1,sets:4,reps:'15-20',rest:60,
+    note:'後部の追い込み。マシンと角度が違うので両方入れる価値がある。<br><b>ベンチが空いていなければ</b>立位前傾のベントオーバーリアレイズ、またはケーブルリアデルトフライで代替。'},
+   {id:'sfP',name:'プリチャーカール（EZバー）',w:15,step:2.5,sets:4,reps:'8-12',rest:75,
+    note:'二頭の下の<b>ブラキアリス</b>が育つ。厚くなると二頭を押し上げて腕が太く見える。<br>下ろしきったところで<b>肘を伸ばしきらない</b>。'},
+   {id:'sfI',name:'インクラインダンベルカール',w:8,unit:'kg×2',step:1,sets:4,reps:'10-12',rest:60,
+    note:'ベンチ角度は<b>45度</b>から。肩がきついなら55〜60度へ。<br>肩を後ろに引いて長頭を<b>伸展位</b>にする。プリチャーと担当が分かれる。'},
+   {id:'sf8',name:'腕＋僧帽',ss:{lab:'スーパーセット × 4組／インターバル 1:00',sets:4,rest:60,
+    rows:[{k:'sf8a',n:'ハンマーカール',w:10,u:'kg×2',st:1,r:'10-12'},
+          {k:'sf8b',n:'ダンベルシュラッグ',w:24,u:'kg×2',st:2,r:'12-15'}]}},
+   {id:'sfR',name:'ケーブル外旋（回旋腱板）',w:5,step:1,sets:3,reps:'15-20',rest:45,
+    note:'<b>肩を長く使うための保険。</b>全メニューでプレス系が37セットあり、肩関節への反復ストレスが高い。<br>重量を追う種目ではない。軽い重量で丁寧に。'}
+  ]},
+
+ ss:{g:'s',tag:'短縮日 早朝',title:'S ｜ 肩・腕 短縮',meta:'中部と後部を優先。プレスは軽めで',
+  warm:{h:'ジムでのウォームアップ 4分 ／ 家で体を温めてから来る',
+        items:['家：足踏み5分＋肩関節と回旋腱板を回す','ジム：ダンベル軽めで肩を温める'],
+        ramp:{l:'ショルダープレス ランプアップ',v:'10kg×12 → 14kg×8 → 本番18kg'}},
+  ex:[
+   {id:'ss1',name:'シーテッド ダンベルショルダープレス',w:18,unit:'kg×2',step:2,sets:4,reps:'8-12',rest:120,wu:'10kg',
+    note:'早朝は低体温で肩が硬い。最初のセットで可動域を確認してから。'},
+   {id:'ss2',name:'ケーブルサイドレイズ（片手）',w:5,step:1,sets:4,reps:'15-20',rest:60},
+   {id:'ss3',name:'肩 中部＋後部',ss:{lab:'スーパーセット × 4組／インターバル 1:00',sets:4,rest:60,
+    rows:[{k:'ss3a',n:'ダンベルサイドレイズ',w:8,u:'kg×2',st:1,r:'15-20'},
+          {k:'ss3b',n:'リバースフライ',w:5,u:'kg',st:2,r:'15-20'}]}},
+   {id:'ssP',name:'プリチャーカール（EZバー）',w:15,step:2.5,sets:4,reps:'8-12',rest:75,
+    note:'下ろしきったところで<b>肘を伸ばしきらない</b>。'},
+   {id:'ss4',name:'腕',ss:{lab:'スーパーセット × 3組／インターバル 1:00',sets:3,rest:60,
+    rows:[{k:'ss4a',n:'ハンマーカール',w:10,u:'kg×2',st:1,r:'10-12'},
+          {k:'ss4b',n:'プレスダウン',w:12.5,u:'kg',st:2.5,r:'15-20'}]}}
+  ]},
+
+// ===== D：レッグ =====
+ df:{g:'d',tag:'休みの日／フル',title:'D ｜ レッグ',meta:'膝の診断で異常なし。フルレンジで発達を狙う',
+  warm:{items:['バイク 5分','股関節・足首・ハム 4分','スクワット ランプアップ 4分'],
+        ramp:{l:'スクワット ランプアップ',v:'20×10 → 40×8 → 60×5 → 75×3'}},
+  ex:[
+   {id:'df1',name:'バーベルスクワット',w:90,step:2.5,sets:4,reps:'6-10',rest:180,
+    note:'深さは<b>パラレル（大腿が床と平行）</b>まで。浅いスクワットは膝蓋大腿関節へのストレスがかえって高い。<br>膝に違和感が出た日は無理せず重量を落とす。<br><b>ラックが埋まっていたら</b>スミスマシンで代替（70kg）。',
+    bad:'<b>セーフティを必ずセット。</b>ひとりで潰れたときの逃げ場を先に作る。<br>膝に違和感が出た日は無理せず重量を落とす。'},
+   {id:'df2',name:'レッグプレス（フルレンジ）',w:80,step:10,sets:3,reps:'10-12',rest:120,
+    note:'足位置を通常に戻し<b>可動域をフル</b>に。<br><b>初回は必ず確認から。</b>ソリの重量と角度が機種で違うため表示重量に意味がない。',
+    bad:'<b>腰が浮く手前で止める。</b>深く下ろしすぎると骨盤が後傾して腰椎に負担がかかる。'},
+   {id:'df3',name:'ブルガリアンスクワット',w:0,unit:'kg×2',step:2,sets:2,reps:'10-12',rest:75,
+    note:'片脚ずつ。左右差の確認にもなる。自重から始めて余裕が出たらダンベルを持つ。<br>3分割・週4回で回すときは<b>2セット</b>に減らす（四頭が過多になるため）。'},
+   {id:'dfR',name:'RDL',w:80,step:5,sets:4,reps:'8-12',rest:120,
+    note:'後鎖の主力。股関節伸展の種目なので<b>脚の日に集約</b>している。<br>膝は軽く曲げたまま固定、ハムの伸びで止める。<b>ストラップ推奨。</b><br>腰が疲れている日は<b>ヒップスラスト60kg</b>に置き換える。'},
+   {id:'df5',name:'レッグカール（マシン）',w:25,step:2.5,sets:3,reps:'12-15',rest:75,
+    note:'ハムの膝屈曲。RDLの股関節伸展と担当が分かれるので両方必要。'},
+   {id:'df4',name:'レッグエクステンション',w:25,step:2.5,sets:3,reps:'12-15',rest:75,
+    note:'四頭筋の単関節種目。反動を使わない。上で1秒止める。'}
+  ]},
+
+ ds:{g:'d',tag:'短縮日 早朝',title:'D ｜ レッグ 短縮',meta:'スミスマシンで軌道を固定。早朝のフリースクワットは避ける',
+  warm:{h:'ジムでのウォームアップ 4分 ／ 家で体を温めてから来る',
+        items:['家：足踏み5分＋股関節・足首・ハムをほぐす','ジム：スミス空バー＋軽めで2セット'],
+        ramp:{l:'スミススクワット ランプアップ',v:'空バー×12 → 20kg×8 → 30kg×5 → 本番40kg'}},
+  ex:[
+   {id:'ds5',name:'スミスマシン スクワット',w:40,step:5,sets:4,reps:'8-10',rest:120,wu:'空バー',
+    note:'軌道が固定され、詰まったときにフックへ逃がせる。ひとりで追い込む早朝に適する。<br><b>バー重量は機種で違う</b>ため表示重量は目安。',
+    bad:'<b>フックの位置を先に確認。</b>手首を回せば引っかかる高さにセットしてから始める。'},
+   {id:'ds1',name:'レッグプレス（フルレンジ）',w:80,step:10,sets:3,reps:'10-12',rest:120,wu:'40kg',
+    note:'低体温下では最初のセットで可動域を慎重に確認してから深くする。'},
+   {id:'ds2',name:'四頭＋ハム',ss:{lab:'スーパーセット × 4組／インターバル 1:15',sets:4,rest:75,
+    rows:[{k:'ds2a',n:'レッグエクステンション',w:25,u:'kg',st:5,r:'12-15'},
+          {k:'ds2b',n:'レッグカール',w:25,u:'kg',st:5,r:'12-15'}]}},
+   {id:'dsH',name:'ヒップスラスト',w:60,step:5,sets:3,reps:'10-12',rest:90,
+    note:'後鎖の補助。早朝でも腰への負担が小さい。<br>片脚種目（ブルガリアン）はフル版に集約したので、早朝はここで臀部を締める。'}
+  ]}
+};
+const GROUPS4=[['a','A','プッシュ'],['b','B','プル'],['s','S','肩腕'],['d','D','レッグ']];
+const GROUPS3=[['a','A','プッシュ'],['b','B','プル'],['d','D','レッグ']];
+// 3分割時にAとBへ差し込む種目（Sの中身を分配）
+const MERGE3={
+ af:[{id:'sf1',name:'シーテッド ダンベルショルダープレス',w:20,unit:'kg×2',step:2,sets:4,reps:'8-12',rest:120,
+      note:'3分割モードでは肩をここで扱う。'},
+     {id:'sf2',name:'ケーブルサイドレイズ（片手）',w:5,step:1,sets:4,reps:'15-20',rest:60},
+     {id:'sf3',name:'ダンベルサイドレイズ',w:8,unit:'kg×2',step:1,sets:4,reps:'15-20',rest:60},
+     {id:'sfR',name:'ケーブル外旋（回旋腱板）',w:5,step:1,sets:3,reps:'15-20',rest:45,
+      note:'<b>肩を長く使うための保険。</b>プレス系が多いので入れている。重量を追う種目ではない。'}],
+ bf:[{id:'sf4',name:'デュアルペクトラルリバースフライ',w:5,step:2.5,sets:4,reps:'15-20',rest:60,
+      note:'3分割モードでは肩後部と二頭をここで扱う。'},
+     {id:'sf5',name:'ダンベルリアレイズ（インクライン うつ伏せ）',w:6,unit:'kg×2',step:1,sets:3,reps:'15-20',rest:60},
+     {id:'sfP',name:'プリチャーカール（EZバー）',w:15,step:2.5,sets:4,reps:'8-12',rest:75},
+     {id:'sfI',name:'インクラインダンベルカール',w:8,unit:'kg×2',step:1,sets:3,reps:'10-12',rest:60},
+     {id:'sf8',name:'腕＋僧帽',ss:{lab:'スーパーセット × 3組／インターバル 1:00',sets:3,rest:60,
+      rows:[{k:'sf8a',n:'ハンマーカール',w:10,u:'kg×2',st:1,r:'10-12'},
+            {k:'sf8b',n:'ダンベルシュラッグ',w:24,u:'kg×2',st:2,r:'12-15'}]}}],
+ as:[{id:'ss3',name:'肩 中部＋前部',ss:{lab:'スーパーセット × 3組／インターバル 1:00',sets:3,rest:60,
+      rows:[{k:'ss3a',n:'ダンベルサイドレイズ',w:8,u:'kg×2',st:1,r:'15-20'},
+            {k:'ss3b',n:'ダンベルショルダープレス',w:16,u:'kg×2',st:2,r:'10-12'}]}}],
+ bs:[{id:'ss4',name:'腕',ss:{lab:'スーパーセット × 3組／インターバル 1:00',sets:3,rest:60,
+      rows:[{k:'ss4a',n:'ハンマーカール',w:10,u:'kg×2',st:1,r:'10-12'},
+            {k:'ss4b',n:'プレスダウン',w:12.5,u:'kg',st:2.5,r:'15-20'}]}}]
+};
+// RDLはDの日に集約（股関節伸展の種目なので脚の日が自然）
+const DROP3={af:['af7'],as:['asW'],bs:['bsR']};
+function planOf(d){
+  const p=PLAN[d];
+  if(S.split==='4'||!MERGE3[d]) return p;
+  const drop=DROP3[d]||[];
+  const base=p.ex.filter(e=>drop.indexOf(e.id)<0);
+  return Object.assign({},p,{ex:base.concat(MERGE3[d]),
+    meta:p.meta+'｜3分割：肩腕を統合'});
+}
+let GROUPS=GROUPS4;
+const VARIANT={a:{full:'af',short:'as'},b:{full:'bf',short:'bs'},s:{full:'sf',short:'ss'},d:{full:'df',short:'ds'}};
+const GINFO={a:{t:'プッシュ',s:'胸・三頭'},b:{t:'プル',s:'背中・後鎖'},s:{t:'肩・腕',s:'三角筋・二頭・僧帽'},d:{t:'レッグ',s:'脚・後鎖'}};
+const BAR={af1:20,af2:20,bf2:20,df1:20,as5:20,dfR:20};   // バーベル種目（バー重量）
+const PLATES=[[25,'k25'],[20,'k20'],[15,'k15'],[10,'k10'],[5,'k5'],[2.5,'k2'],[1.25,'k2']];
+const FORM={
+ af1:'肩甲骨を寄せて下げたまま固定｜脇は45度、開きすぎない｜バーは乳頭のライン｜尻を浮かせない｜セーフティを胸の高さに',
+ af2:'ベンチ角度は<b>30度</b>。45度以上だと肩の前が主役になる｜バーは鎖骨のすぐ下｜肘を落としすぎない｜スミスなら足を少し前に出し、バーが鎖骨の下に落ちる位置にベンチを調整',
+ afC:'滑車を<b>一番下</b>にセット｜下から上へ弧を描く｜肘は軽く曲げて固定｜<b>下で2秒止めて胸を伸ばす</b>｜寄せきった位置でも1秒止める',
+ af7:'<b>体を前傾</b>させて胸狙い｜肩が肘より下がるまで沈めない｜反動で跳ねない',
+ af8:'肘を開かない・位置を固定｜額ではなく<b>頭の後ろ</b>へ下ろすと長頭が伸びる｜肘に痛みが出たら中止',
+ af9:'OHエクステンションは肘を固定して長頭を伸ばす｜プレスダウンは脇を締めて肘を体側に',
+ as5:'早朝は特に<b>ランプアップを省略しない</b>｜フォームはフル版と同じ｜潰れそうなら1回残して終える',
+ as6:'ベンチ角度は<b>30度</b>｜ベンチ後なので重量を追わない｜肩をすくめない',
+ asW:'肩を下げて固定｜最後まで押し切って外側を絞る｜シートは肘が肩の高さに来る位置',
+ as4:'フライは肘を軽く曲げて固定、下で胸を伸ばす｜プレスダウンは脇を締める',
+ bf3:'<b>肩甲骨を下げてから</b>引く（すくんだまま引かない）｜顎ではなく胸をバーに近づける｜下で完全に伸ばしきる',
+ bf2:'上体は45度前後｜バーはみぞおち〜へその上へ引く｜反動で体を起こさない｜腰が丸まったらそのセットは終了',
+ bf4:'肩をすくめない｜鎖骨に向けて引く｜のけぞりすぎない（上体は10〜20度まで）',
+ bfS:'胸を張って背中はまっすぐ｜<b>肩甲骨を寄せきってから1秒止める</b>｜腕で引かない｜戻すとき背中を丸めない',
+ bfV:'<b>顔の高さ</b>で引く｜肘を肩より高く保つ｜引ききったところで外旋（親指を後ろへ）｜肩をすくめない',
+ bs5:'肩甲骨を下げてから引く｜早朝は無理に回数を追わずアシスト機を早めに使う',
+ bs1:'肩をすくめない｜鎖骨に向けて引く｜のけぞりすぎない',
+ bsS:'肩甲骨を寄せきってから1秒止める｜腕で引かない｜早朝でも脊柱への負担が小さい',
+ bsR:'背中を丸めない｜肘を真後ろへ引く｜腕で引かず肩甲骨を寄せる意識｜体をひねらない',
+ bs7:'リバースフライは肩をすくめず肘を固定｜シュラッグは<b>真上に上げる</b>（回さない）',
+ sf1:'腰を反らない。背もたれに腰を密着｜肘は真横より少し前｜頭上でロックしきらない',
+ sf2:'小指側から上げる｜僧帽筋で引き上げない（肩をすくめない）｜下ろすときも力を抜かない',
+ sf3:'肩の高さまで。それ以上は僧帽筋の仕事｜肘を軽く曲げて固定｜反動を使うなら重量を下げる',
+ sf4:'肩をすくめない｜肘は軽く曲げて固定｜首や僧帽ではなく<b>肩の後ろ</b>に効いているか確認',
+ sf5:'ベンチは30〜45度｜肘を軽く曲げて固定｜小指側からリードして肩の後ろへ',
+ sfP:'下ろしきったところで<b>肘を伸ばしきらない</b>（腱を痛める）｜パッドから肘を浮かせない｜反動禁止',
+ sfI:'ベンチ角度は<b>45度</b>から。肩がきついなら55〜60度へ｜肘が前に出たら角度を上げる｜下で完全に伸ばして長頭を伸展させる',
+ sf8:'ハンマーは手のひらを向かい合わせ｜シュラッグは<b>真上に上げる</b>（回さない）、上で1秒止める',
+ sfR:'肘を体側に固定（タオルを挟むとよい）｜前腕だけを外へ回す｜肩をすくめない｜軽い重量で丁寧に',
+ ss1:'腰を反らない｜早朝は肩が硬いので可動域を最初のセットで確認',
+ ss2:'小指側から上げる｜肩をすくめない',
+ ss3:'サイドは肩の高さまで｜リバースフライは肩をすくめず肘を固定',
+ ssP:'肘を伸ばしきらない｜パッドから肘を浮かせない',
+ ss4:'ハンマーは手のひらを向かい合わせ｜プレスダウンは脇を締める',
+ df1:'<b>パラレル（腿が床と平行）</b>まで｜膝と爪先の向きを揃える｜膝が内に入らない｜背中を丸めない｜セーフティを必ずセット',
+ df2:'腰が浮かない範囲まで下ろす｜膝をロックしきらない｜足位置は肩幅、爪先はやや外',
+ dfR:'背中はまっすぐ、丸めない｜膝は軽く曲げた角度で<b>固定</b>｜ハムの張りを感じたところで折り返す｜バーは脚に沿わせる｜ストラップ推奨',
+ df3:'前脚の膝が内に入らない｜後ろ足は支えるだけ、体重をかけない｜上体をやや前傾させると臀部、垂直だと四頭',
+ df4:'反動を使わない｜上で1秒止める｜膝に痛みが出たら重量を下げる',
+ df5:'腰を浮かせない｜下ろすときもゆっくり｜足首を伸ばすとハムに集中しやすい',
+ ds5:'足をバーの真下より<b>やや前</b>に置く｜フックの位置を必ず先に確認｜パラレルまで',
+ ds1:'早朝は最初のセットで可動域を確認してから深くする｜腰が浮かない範囲まで',
+ ds2:'エクステンションは反動なし｜カールは腰を浮かせない',
+ dsH:'肩甲骨をベンチに固定｜<b>顎を引いたまま</b>｜腰を反らない｜上で1秒止めて臀部を締める'
+};
+
+// 種目ID → 部位（複数可）
+const MUSCLE={
+ af1:['胸'],af2:['胸'],afC:['胸'],af7:['胸'],af8:['三頭'],af9:['三頭','三頭'],
+ as5:['胸'],as6:['胸'],asW:['胸'],as4:['胸','三頭'],
+bf3:['背中'],bf2:['背中'],bf4:['背中'],bfS:['背中'],bfV:['肩後'],
+ bs5:['背中'],bs1:['背中'],bsS:['背中'],bsR:['背中'],bs7:['肩後','僧帽'],
+ sf1:['肩'],sf2:['肩'],sf3:['肩'],sf4:['肩後'],sf5:['肩後'],
+ sfP:['二頭'],sfI:['二頭'],sf8:['二頭','僧帽'],sfR:['回旋腱板'],
+ ss1:['肩'],ss2:['肩'],ss3:['肩','肩後'],ssP:['二頭'],ss4:['二頭','三頭'],
+ df1:['四頭'],df2:['四頭'],dfR:['ハム臀'],df3:['四頭'],df4:['四頭'],df5:['ハム臀'],
+ ds5:['四頭'],ds1:['四頭'],ds2:['四頭','ハム臀'],ds3:['四頭'],dsH:['ハム臀']
+};
+// 部位ごとの推奨レンジ（週セット数）
+const REC={
+ '胸':[10,20],'背中':[10,22],'肩':[12,22],'肩後':[8,16],
+ '四頭':[8,20],'ハム臀':[8,18],'三頭':[8,16],'二頭':[8,16],'僧帽':[0,10],'回旋腱板':[0,8]
+};
+const ORDER=['胸','背中','肩','肩後','四頭','ハム臀','三頭','二頭','僧帽','回旋腱板'];
+const SEP=[[1,'火','','a'],[2,'水','B','b'],[3,'木','C','d'],[4,'金','A',null],
+[5,'土','','a'],[6,'日','','b'],[7,'月','C','d'],[8,'火','A',null],
+[9,'水','','a'],[10,'木','B','b'],[11,'金','C','d'],[12,'土','D',null],
+[13,'日','','a'],[14,'月','B','b'],[15,'火','A',null],[16,'水','A',null],
+[17,'木','','d'],[18,'金','B','a'],[19,'土','','b'],[20,'日','D',null],
+[21,'月','','d'],[22,'火','','a'],[23,'水','D',null],[24,'木','A',null],
+[25,'金','','b'],[26,'土','','d'],[27,'日','','a'],[28,'月','A',null],
+[29,'火','','b'],[30,'水','B','d']];
+const TARGET={full:90*60,short:50*60};
+const KEY='trainplan-v1';
+
+/* ============ 状態 ============ */
+let S={next:'a',slot:'full',split:'4',theme:'light',w:{},lv:{},hit:{},done:{},reps:{},sw:{},hist:[],last:{},start:{},timer:null};
+let curG='a', saveT=null, wake=null, elapT=null;
+const dayId=()=>VARIANT[curG][S.slot];
+
+// 初回起動時のみ：9月以降なら4分割、それ以前は3分割
+function defaultSplit(){
+  const d=new Date();
+  const ym=d.getFullYear()*100+(d.getMonth()+1);
+  return '3';   // 9月は週5回・3分割で中3.3日を確保
+}
+async function load(){
+  let raw=null;
+  try{ const r=await window.storage.get(KEY); if(r&&r.value) raw=r.value; }catch(e){}
+  if(raw===null){ try{ raw=localStorage.getItem(KEY); }catch(e){} }
+  if(raw){ try{ S=Object.assign(S,JSON.parse(raw)); }catch(e){} }
+  else { S.split=defaultSplit(); }   // 初回のみ日付で判定
+  S.hist=S.hist||[]; S.last=S.last||{}; S.start=S.start||{}; S.reps=S.reps||{}; S.lv=S.lv||{}; S.sw=S.sw||{}; S.hit=S.hit||{}; S.split=S.split||'4';
+  GROUPS=(S.split==='3')?GROUPS3:GROUPS4;
+  if(S.split==='3'&&curG==='s') curG='a';
+  if(S.split==='3'&&S.next==='s') S.next='a';
+}
+function saveNow(){
+  try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){}
+  try{ window.storage.set(KEY,JSON.stringify(S)); }catch(e){}
+}
+function save(){
+  clearTimeout(saveT);
+  saveT=setTimeout(async()=>{
+    let ok=false;
+    try{ localStorage.setItem(KEY,JSON.stringify(S)); ok=true; }catch(e){}
+    try{ await window.storage.set(KEY,JSON.stringify(S)); ok=true; }catch(e){}
+    const n=document.getElementById('savenote');
+    if(n) n.textContent = ok ? '記録は自動保存されています'
+      : '⚠ この画面では記録が保存されません（ホーム画面から開いてください）';
+  },400);
+}
+const wOf=e=>(S.w[e.id]!==undefined?S.w[e.id]:e.w);
+const isDone=(d,i,s)=>!!(S.done[d]&&S.done[d][i+'_'+s]);
+const upper=r=>{const m=String(r||'').match(/(\d+)\s*$/);return m?+m[1]:null;};
+function targetRep(e,s){
+  if(e.setReps) return upper(e.setReps[s]);
+  return upper(e.reps);
+}
+const rKey=(d,i,s)=>d+':'+i+'_'+s;
+const getRep=(d,i,s)=>S.reps[rKey(d,i,s)];
+function setRep(d,i,s,v){ S.reps[rKey(d,i,s)]=Math.max(1,Math.min(99,v)); save(); }
+const getSW=(d,i,s)=>S.sw[rKey(d,i,s)];
+function wLabel(e,w){
+  if((e.unit||'')==='自重') return '自重';
+  if((e.unit||'').indexOf('加重')>=0)
+    return w>0 ? '+'+w+'kg' : (w<0 ? 'アシスト'+w+'kg' : '自重');
+  return w+(e.unit||'kg');
+}
+const canNeg=e=>(e.unit||'').indexOf('加重')>=0;
+function setSW(d,i,s,v,e){ const lo=(e&&canNeg(e))?-60:0;
+  S.sw[rKey(d,i,s)]=Math.max(lo,Math.round(v*100)/100); save(); }
+// 未実施セットに表示する重量：直前セットの実績があればそれ、なければ基準重量
+function planW(d,e,i,s){
+  const own=getSW(d,i,s); if(own!==undefined) return own;
+  for(let k=s-1;k>=0;k--){ const p=getSW(d,i,k); if(p!==undefined) return p; }
+  return wOf(e);
+}
+function check(d,i,s,def){
+  S.done[d]=S.done[d]||{};
+  S.done[d][i+'_'+s]=1;
+  if(def!=null && getRep(d,i,s)===undefined) S.reps[rKey(d,i,s)]=def;
+  if(!S.start[d]) S.start[d]=Date.now();
+  save();
+}
+function uncheck(d,i,s){
+  if(S.done[d]) delete S.done[d][i+'_'+s];
+  delete S.reps[rKey(d,i,s)];
+  delete S.sw[rKey(d,i,s)];
+  save();
+}
+const totalSets=d=>planOf(d).ex.reduce((a,e)=>a+(e.ss?e.ss.sets:e.sets)+(e.wu?1:0),0);
+const WARMUP_FULL=12*60, WARMUP_SHORT=4*60;
+const WARMUP=12*60;
+// 1セットの実働：インターバルが長い種目＝高重量とみなし所要も長い
+const workSec=rest=>rest>=150?45:(rest>=90?35:28);
+function setSec(e,isWU){
+  if(e.ss) return 60+e.ss.rest;          // スーパーセットは2種目ぶん
+  if(isWU) return 30+Math.min(e.rest,60);
+  return workSec(e.rest)+e.rest;
+}
+const exSec=e=>(e.ss?e.ss.sets*setSec(e):e.sets*setSec(e)+(e.wu?setSec(e,true):0));
+const daySec=d=>(S.slot==='full'?WARMUP_FULL:WARMUP_SHORT)+planOf(d).ex.reduce((a,e)=>a+exSec(e),0);
+function remainSec(d){
+  let t=0;
+  planOf(d).ex.forEach((e,i)=>{
+    const k=e.wu?1:0, n=e.ss?e.ss.sets:e.sets;
+    if(e.wu&&!isDone(d,i,0)) t+=setSec(e,true);
+    for(let s=0;s<n;s++) if(!isDone(d,i,s+k)) t+=setSec(e);
+  });
+  return t;
+}
+const mins=s=>Math.round(s/60)+'分';
+const doneSets=d=>Object.keys(S.done[d]||{}).length;
+
+/* ============ プレート計算 ============ */
+function plateHTML(id,w,lbl){
+  const bar=BAR[id]; if(!bar) return '';
+  let per=(w-bar)/2;
+  const head=(lbl?lbl+' <b>'+w+'kg</b>／':'')+'片側 '+(per>0?per+'kg':'—');
+  if(per<=0) return `<div class="plates"><span class="l">${head}　バーのみ</span></div>`;
+  let out='',rest=Math.round(per*100)/100;
+  for(const [kg,cls] of PLATES){
+    while(rest>=kg-0.001){ out+=`<span class="pl ${cls}">${kg}</span>`; rest=Math.round((rest-kg)*100)/100; }
+  }
+  const warn = rest>0.01 ? `<span class="l" style="color:var(--warn)">＋${rest}kg 不足</span>` : '';
+  return `<div class="plates"><span class="l">${head}</span>${out}${warn}</div>`;
+}
+
+/* ============ 描画 ============ */
+function slotLabel(g){
+  const d=VARIANT[g][S.slot];
+  const m=Math.round(daySec(d)/60);
+  return (S.slot==='full'?'フル ':'短縮 ')+m+'分';
+}
+function tabs(){
+  document.getElementById('tabs').innerHTML=GROUPS.map(([g,k,t])=>{
+    const id=VARIANT[g][S.slot];
+    return `<button class="tab${g===curG?' sel':''}${doneSets(id)?' hasprog':''}${g===S.next?' isnext':''}" data-g="${g}"><span class="tk">${k}</span> ${t}<span class="nx">次</span><span class="dot"></span><span class="s">${slotLabel(g)}</span></button>`;
+  }).join('');
+  document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+    curG=b.dataset.g; tabs(); panel();
+    document.querySelector('.tabbar').scrollIntoView({block:'start'});
+  });
+  const sw=document.getElementById('slotsw');
+  sw.querySelectorAll('button').forEach(b=>b.classList.toggle('sel',b.dataset.slot===S.slot));
+  document.querySelectorAll('#splitsw button').forEach(b=>b.classList.toggle('sel',b.dataset.split===S.split));
+}
+
+document.querySelectorAll('#slotsw button').forEach(b=>b.onclick=()=>{
+  S.slot=b.dataset.slot; save(); tabs(); panel();
+});
+document.querySelectorAll('#splitsw button').forEach(b=>b.onclick=()=>{
+  S.split=b.dataset.split;
+  GROUPS=(S.split==='3')?GROUPS3:GROUPS4;
+  if(S.split==='3'){ if(curG==='s') curG='a'; if(S.next==='s') S.next='a'; }
+  VOLFREQ=(S.split==='3')?4:5;
+  save(); nextCard(); tabs(); panel(); renderVol();
+});
+
+function levelup(d,e,i){
+  if(!e.sets||e.unit==='自重'||S.lv[e.id]) return '';
+  const k=e.wu?1:0;
+  let all=true, any=false, base=wOf(e), dropped=false;
+  for(let s=0;s<e.sets;s++){
+    const idx=s+k, t=targetRep(e,s), g=getRep(d,i,idx);
+    if(!isDone(d,i,idx)||t==null||g===undefined){all=false;break;}
+    any=true; if(g<t) all=false;
+    if(planW(d,e,i,idx)<base) dropped=true;
+  }
+  if(!all||!any||dropped) return '';
+  const step=e.step||2.5, nw=Math.round((wOf(e)+step)*100)/100;
+  const n=(S.hit[e.id]||0)+1;
+  const ready=n>=2;
+  return `<div class="levelup${ready?'':' wait'}">
+    <span class="lu-t">全セットで上限達成（<b>${n}回目</b>）。${ready
+      ?'次回は <b>'+nw+(e.unit||'kg')+'</b> へ。'
+      :'カット中は<b>2回連続</b>してから上げる。今回は据え置き。'}</span>
+    ${ready?`<button data-lv="${e.id}" data-nw="${nw}">重量を上げる</button>`:''}</div>`;
+}
+
+function exHTML(d,e,i){
+  const n=(e.ss?e.ss.sets:e.sets)+(e.wu?1:0);
+  let c=0; for(let s=0;s<n;s++) if(isDone(d,i,s)) c++;
+  const done=c===n;
+  let body='';
+  if(e.ss){
+    body=`<div class="ssbox"><div class="sslab">${e.ss.lab}</div>`+
+      e.ss.rows.map(x=>{
+        const cw=(S.w[x.k]!==undefined?S.w[x.k]:x.w);
+        const ed=S.w[x.k]!==undefined&&S.w[x.k]!==x.w;
+        const lbl=(x.u.indexOf('加重')>=0)?(cw>0?'+'+cw+'kg':(cw<0?'アシスト'+cw+'kg':'自重')):cw+x.u;
+        return `<div class="ssrow"><span class="ssname">${x.n}${ed?'<em class="edm">変更</em>':''}</span>
+          <span class="ssw"><button data-sk="${x.k}" data-d="-1">−</button>
+            <b>${lbl}</b>
+            <button data-sk="${x.k}" data-d="1">＋</button></span>
+          <span class="ssrep">${x.r}</span></div>`;
+      }).join('')+
+      `</div><div class="srows">`+
+      Array.from({length:e.ss.sets},(_,s)=>{
+        const on=isDone(d,i,s);
+        return `<div class="srow${on?' on':''}"><span class="sn">${s+1}</span>
+          <span class="fld plain"><b>${e.ss.rows.length}種目</b></span>
+          <span class="fld plain"><b>1</b><i>組</i></span>
+          ${on?`<button class="ck" data-u="${i}_${s}">✓</button>`
+              :`<button class="ck" data-i="${i}" data-s="${s}" data-r="${e.ss.rest}" data-nw="">○</button>`}</div>`;
+      }).join('')+
+      `</div><div class="hint">1組＝2種目を連続。組が終わったら ○ を押す。重量は −＋ で調整（次回も保持）。</div>`;
+  }else{
+    const w=wOf(e), edited=S.w[e.id]!==undefined&&S.w[e.id]!==e.w;
+    const unit=e.unit||'kg';
+    const wtDisp=unit==='自重'?`<div class="stepper"><div class="val"><span class="n">自重</span></div></div>`:
+      `<div class="stepper"><button data-w="${e.id}" data-dir="-1">−</button>
+        <div class="val">${canNeg(e)
+          ? `<span class="n" style="font-size:${w===0?'22px':'26px'}">${wLabel(e,w)}</span>`
+          : `<span class="n">${w}</span><span class="u">${unit}</span>`}</div>
+        <button data-w="${e.id}" data-dir="1">＋</button></div>`;
+    body=`<div class="wrow">${wtDisp}
+      <span class="target">${e.sets}<span>セット</span>${e.reps?' × '+e.reps+'<span>回</span>':''}</span>
+      <span class="restv"><span class="l">インターバル</span><br><span class="v">${fmt(e.rest)}</span></span></div>`;
+    if(edited) body+=`<div class="edited">初期値 ${e.w}${unit} から変更<button data-rst="${e.id}">戻す</button></div>`;
+    const L=S.last[e.id];
+    if(L) body+=`<div class="lastrec">前回 ${L.v?'':'<b>'+wLabel(e,L.w)+'</b>　'}${L.r||''}　<span style="opacity:.8">${L.d}</span></div>`;
+    // 次に行うセットの重量でプレートを表示
+    let nextW=w, nextLbl='';
+    if(BAR[e.id]){
+      const kk=e.wu?1:0;
+      for(let s=0;s<e.sets;s++){ if(!isDone(d,i,s+kk)){ nextW=planW(d,e,i,s+kk); nextLbl=`次 ${s+1}セット目`; break; } }
+    }
+    body+=plateHTML(e.id,nextW,nextLbl);
+    body+=`<div class="srows">`;
+    let k=0;
+    if(e.wu){
+      const on=isDone(d,i,0);
+      body+=`<div class="srow wu${on?' on':''}"><span class="sn">W/U</span>
+        <span class="fld plain"><b>${e.wu}</b></span>
+        <span class="fld plain"></span>
+        <button class="ck" data-i="${i}" data-s="0" data-r="${e.rest}" data-nw="">${on?'✓':'○'}</button></div>`;
+      k=1;
+    }
+    for(let s=0;s<e.sets;s++){
+      const idx=s+k, on=isDone(d,i,idx);
+      const tgt=e.setReps?e.setReps[s]:(e.reps||'');
+      const pw=planW(d,e,i,idx);
+      const rp=getRep(d,i,idx);
+      if(on){
+        body+=`<div class="srow on"><span class="sn">${s+1}</span>
+          <span class="fld"><button data-sw="${i}_${idx}" data-d="-1">−</button>${canNeg(e)
+            ?`<b style="font-size:15px;min-width:62px">${wLabel(e,pw)}</b>`
+            :`<b>${pw}</b><i>${unit}</i>`}<button data-sw="${i}_${idx}" data-d="1">＋</button></span>
+          <span class="fld"><button data-sr="${i}_${idx}" data-d="-1">−</button><b>${rp!==undefined?rp:'-'}</b><i>回</i><button data-sr="${i}_${idx}" data-d="1">＋</button></span>
+          <button class="ck" data-u="${i}_${idx}">✓</button></div>`;
+      }else{
+        body+=`<div class="srow"><span class="sn">${s+1}</span>
+          <span class="fld plain">${canNeg(e)
+            ?`<b style="font-size:15px">${wLabel(e,pw)}</b>`
+            :`<b>${pw}</b><i>${unit}</i>`}</span>
+          <span class="fld plain"><b>${tgt||'-'}</b><i>回</i></span>
+          <button class="ck" data-i="${i}" data-s="${idx}" data-r="${e.rest}" data-def="${targetRep(e,s)||''}" data-nw="${pw}">○</button></div>`;
+      }
+    }
+    body+=`</div>`;
+    if(e.reps||e.setReps) body+=`<div class="hint">○ を押すと完了。実際の重量・回数は −＋ で修正。✓ を押すと取消。</div>`;
+    body+=levelup(d,e,i);
+  }
+  if(FORM[e.id]) body+=`<div class="formbox"><span class="fh">フォーム</span>${FORM[e.id].split('｜').map(x=>`<span class="fi">${x}</span>`).join('')}</div>`;
+  if(e.note) body+=`<div class="note">${e.note}</div>`;
+  if(e.bad) body+=`<div class="note bad">${e.bad}</div>`;
+  return `<div class="ex${done?' done':''}" id="ex${i}"><div class="ex-h"><span class="ex-no">${i+1}</span>
+    <span class="ex-name">${e.name}</span><span class="extime">${mins(exSec(e))}</span></div><div class="ex-b">${body}</div></div>`;
+}
+
+function panel(){
+  const d=dayId(),p=planOf(d),tot=totalSets(d),dn=doneSets(d);
+  const warm=`<div class="warm"><h3>${p.warm.h||'ウォームアップ 12分'}</h3><ul>`+
+    p.warm.items.map(x=>`<li>${x}</li>`).join('')+`</ul>`+
+    (p.warm.ramp?`<div class="ramp"><div class="l">${p.warm.ramp.l}</div><div class="v">${p.warm.ramp.v}</div></div>`:'')+`</div>`;
+  document.getElementById('panels').innerHTML=
+    `<div class="phead ${p.g}"><span class="tag">${p.tag}</span><h2>${p.title}</h2><p class="m">${p.meta}</p>
+      <div class="pbar"><i style="width:${tot?dn/tot*100:0}%"></i></div>
+      <div class="pmeta"><span>${dn} / ${tot} セット　目安 ${mins(daySec(d))}<span style="opacity:.75">（W/U込）</span></span><span id="elap"></span></div>
+      <div class="pacts"><button class="pact" id="jump">次の種目へ</button><button class="pact" id="rst">リセット</button>
+      <button class="pact fin${dn&&dn===tot?' ready':''}" id="fin">記録して次へ</button></div></div>`
+    +warm+p.ex.map((e,i)=>exHTML(d,e,i)).join('')
+    +(curG==='d'?`<div class="note">${S.slot==='full'
+        ?'<b>休みの日枠</b>　余力があればクロストレーナー15分。スクワットを入れた日は無理をしない。'
+        :'<b>早朝枠</b>　55分に収める。時間が押したら3番目のブルガリアンスクワットを切る。'}</div>`:'');
+
+  document.querySelectorAll('.ck[data-i]').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i,s=+b.dataset.s;
+    if(isDone(d,i,s)) return;
+    const def=b.dataset.def?+b.dataset.def:null;
+    check(d,i,s,def);
+    if(b.dataset.nw) setSW(d,i,s,+b.dataset.nw);
+    startTimer(+b.dataset.r,planOf(d).ex[i].name); lockScreen();
+    panel();tabs();
+  });
+  document.querySelectorAll('[data-u]').forEach(b=>b.onclick=(ev)=>{
+    ev.stopPropagation();
+    const [i,s]=b.dataset.u.split('_').map(Number);
+    uncheck(d,i,s); panel();tabs();
+  });
+  document.querySelectorAll('[data-sr]').forEach(b=>b.onclick=(ev)=>{
+    ev.stopPropagation();
+    const [i,s]=b.dataset.sr.split('_').map(Number);
+    setRep(d,i,s,(getRep(d,i,s)||0)+(+b.dataset.d)); panel();
+  });
+  document.querySelectorAll('[data-sw]').forEach(b=>b.onclick=(ev)=>{
+    ev.stopPropagation();
+    const [i,s]=b.dataset.sw.split('_').map(Number);
+    const e=planOf(d).ex[i];
+    setSW(d,i,s,planW(d,e,i,s)+(+b.dataset.d)*(e.step||2.5),e); panel();
+  });
+  document.querySelectorAll('[data-sk]').forEach(b=>b.onclick=(ev)=>{
+    ev.stopPropagation();
+    const k=b.dataset.sk;
+    let row=null;
+    planOf(d).ex.forEach(x=>{ if(x.ss) x.ss.rows.forEach(y=>{ if(y.k===k) row=y; }); });
+    if(!row) return;
+    const cw=(S.w[k]!==undefined?S.w[k]:row.w);
+    const lo=(row.u.indexOf('加重')>=0)?-60:0;
+    S.w[k]=Math.max(lo,Math.round((cw+(+b.dataset.d)*(row.st||2.5))*100)/100);
+    save(); panel();
+  });
+  document.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{
+    S.w[b.dataset.lv]=+b.dataset.nw; S.lv[b.dataset.lv]=1; S.hit[b.dataset.lv]=0; save(); panel();
+  });
+  document.querySelectorAll('[data-w]').forEach(b=>b.onclick=()=>{
+    const e=planOf(d).ex.find(x=>x.id===b.dataset.w);
+    const lo=canNeg(e)?-60:0;
+    const nw=Math.max(lo,Math.round((wOf(e)+(+b.dataset.dir)*(e.step||2.5))*100)/100);
+    S.w[e.id]=nw;save();panel();
+  });
+  document.querySelectorAll('[data-rst]').forEach(b=>b.onclick=()=>{
+    delete S.w[b.dataset.rst]; delete S.lv[b.dataset.rst]; save();panel();
+  });
+  document.getElementById('rst').onclick=()=>{
+    if(confirm('この日のチェックと回数を全部消しますか？')){
+      delete S.done[d]; delete S.start[d];
+      Object.keys(S.reps).forEach(rk=>{ if(rk.indexOf(d+':')===0) delete S.reps[rk]; });
+      Object.keys(S.sw).forEach(rk=>{ if(rk.indexOf(d+':')===0) delete S.sw[rk]; });
+      save();panel();tabs();}
+  };
+  document.getElementById('fin').onclick=finishDay;
+  document.getElementById('jump').onclick=()=>{
+    const c=curEx(d);
+    if(!c){ alert('全種目が完了しています。「記録して次へ」を押してください。'); return; }
+    const t=document.getElementById('ex'+c.i);
+    if(t) t.scrollIntoView({behavior:'smooth',block:'center'});
+  };
+  elapsed(); fab();
+}
+
+/* ============ 経過時間 ============ */
+function curEx(d){
+  const p=planOf(d);
+  for(let i=0;i<p.ex.length;i++){
+    const e=p.ex[i], k=e.wu?1:0, n=(e.ss?e.ss.sets:e.sets)+k;
+    let c=0; for(let s=0;s<n;s++) if(isDone(d,i,s)) c++;
+    if(c<n) return {i:i,e:e,done:c,total:n};
+  }
+  return null;
+}
+function fab(){
+  const el=document.getElementById('fab'); if(!el) return;
+  const d=dayId(), c=curEx(d);
+  if(!c){ el.classList.remove('show'); return; }
+  document.getElementById('fabno').textContent=c.i+1;
+  document.getElementById('fabname').textContent=c.e.name;
+  document.getElementById('fabset').textContent=
+    (c.e.ss?(c.done+1)+'組目 / '+c.total+'組':(c.done+1)+'セット目 / '+c.total);
+  el.classList.add('show');
+  el.classList.toggle('up',document.getElementById('timer').classList.contains('show'));
+  el.onclick=()=>{
+    const t=document.getElementById('ex'+c.i);
+    if(t) t.scrollIntoView({behavior:'smooth',block:'center'});
+  };
+}
+
+function elapsed(){
+  clearInterval(elapT);
+  const tickE=()=>{
+    const d=dayId(),el=document.getElementById('elap');
+    if(!el) return;
+    const rem=remainSec(d);
+    if(!S.start[d]){ el.textContent='残り '+mins(rem); return; }
+    const s=Math.floor((Date.now()-S.start[d])/1000), t=TARGET[S.slot];
+    el.textContent='経過 '+fmt(s)+' ／ 残り '+mins(rem);
+    const over = (s+rem) > t;
+    el.style.opacity = over ? 1 : .85;
+    el.style.fontWeight = over ? 900 : 700;
+  };
+  tickE(); elapT=setInterval(tickE,1000);
+}
+
+/* ============ ローテーション ============ */
+// カレンダーから今日の予定を引く
+function todayPlan(){
+  const d=new Date();
+  if(d.getFullYear()!==2026||d.getMonth()+1!==9) return null;
+  const row=SEP.find(x=>x[0]===d.getDate());
+  return row||null;
+}
+function renderToday(){
+  const el=document.getElementById('todaybar'); if(!el) return;
+  const t=todayPlan();
+  const NM={a:'A プッシュ',b:'B プル',s:'S 肩・腕',d:'D レッグ'};
+  if(!t){ el.innerHTML='<span class="tdate">9月のカレンダー対象外</span><span class="tnote">下の「次にやる日」に従う</span>'; return; }
+  const [dd,ww,cc,gg]=t;
+  const shift = (cc==='A'||cc==='D')?'早朝勤務':(cc==='B'?'日勤':(cc==='C'?'午後勤務':'休み'));
+  if(!gg){
+    el.className='todaybar off';
+    el.innerHTML=`<span class="tdate">9/${dd}（${ww}）${shift}</span><span class="tbig">オフ</span>
+      <span class="tnote">回復日。ウォーキング20〜30分は入れてよい</span>`;
+    return;
+  }
+  const slot = (cc==='B')?'short':'full';
+  const slotL = (cc==='B')?'短縮 50分・4:00起床':'フル・午前';
+  el.className='todaybar g'+gg;
+  el.innerHTML=`<span class="tdate">9/${dd}（${ww}）${shift}</span>
+    <span class="tbig">${NM[gg]}</span>
+    <span class="tnote">${slotL}</span>
+    ${(gg!==S.next||slot!==S.slot)?`<button class="tsync" data-g="${gg}" data-s="${slot}">この予定に合わせる</button>`:'<span class="tok">設定済み ✓</span>'}`;
+  const b=el.querySelector('.tsync');
+  if(b) b.onclick=()=>{
+    S.next=b.dataset.g; curG=b.dataset.g; S.slot=b.dataset.s;
+    save(); nextCard(); tabs(); panel(); renderVol();
+  };
+}
+
+function nextCard(){
+  renderToday();
+  const g=S.next,el=document.getElementById('nb');
+  el.className='next-badge '+g;
+  document.getElementById('nbk').textContent=g.toUpperCase();
+  document.getElementById('nt').textContent=GINFO[g].t;
+  document.getElementById('ns').textContent=GINFO[g].s;
+  document.querySelectorAll('.cchip').forEach(c=>c.classList.toggle('on',c.dataset.c===g));
+  const cs=document.getElementById('chipS'); if(cs) cs.style.display=(S.split==='3')?'none':'';
+}
+function finishDay(){
+  const o=(S.split==='3')?['a','b','d']:['a','b','d','s'], g=curG, d=VARIANT[g][S.slot];
+  const dn=doneSets(d),tot=totalSets(d);
+  if(dn===0){ alert('チェックが1つも付いていません。'); return; }
+  if(dn<tot && !confirm(dn+'/'+tot+'セットで記録しますか？')) return;
+
+  const dt=new Date(),ds=(dt.getMonth()+1)+'/'+dt.getDate();
+  const detail=[];
+  planOf(d).ex.forEach((e,i)=>{
+    const k=e.wu?1:0, n=e.ss?e.ss.sets:e.sets;
+    if(e.ss){
+      let c=0; for(let s=0;s<n;s++) if(isDone(d,i,s)) c++;
+      if(c) detail.push({n:e.name,r:c+'組　'+e.ss.rows.map(x=>{
+        const cw=(S.w[x.k]!==undefined?S.w[x.k]:x.w);
+        return x.n+' '+((x.u.indexOf('加重')>=0)?(cw>0?'+'+cw+'kg':(cw<0?'アシスト'+cw+'kg':'自重')):cw+x.u);
+      }).join(' / ')});
+      return;
+    }
+    let vary=false,w0=null;const parts=[];
+    for(let s=0;s<n;s++){
+      const rep=getRep(d,i,s+k); if(rep===undefined) continue;
+      const sw=planW(d,e,i,s+k);
+      if(w0===null) w0=sw; else if(sw!==w0) vary=true;
+      parts.push({w:sw,g:rep});
+    }
+    if(!parts.length) return;
+    const rstr = vary ? parts.map(p=>wLabel(e,p.w)+'×'+p.g).join(' / ')
+                      : wLabel(e,w0)+'　'+parts.map(p=>p.g).join('/');
+    detail.push({n:e.name,r:rstr});
+    S.last[e.id]={w:(w0!==null?w0:wOf(e)),d:ds,r:(vary?rstr:parts.map(p=>p.g).join('/')),v:vary};
+    // 全セット上限達成なら回数を加算、そうでなければリセット
+    if(e.sets&&e.unit!=='自重'){
+      const kk=e.wu?1:0; let allHit=true,anyRep=false,dropped=false;
+      for(let s=0;s<e.sets;s++){
+        const t=targetRep(e,s), g=getRep(d,i,s+kk);
+        if(g===undefined||t===null){allHit=false;break;}
+        anyRep=true; if(g<t) allHit=false;
+        if(planW(d,e,i,s+kk)<wOf(e)) dropped=true;
+      }
+      if(allHit&&anyRep&&!dropped) S.hit[e.id]=(S.hit[e.id]||0)+1;
+      else S.hit[e.id]=0;
+    }
+    delete S.lv[e.id];
+  });
+  const el=Math.floor(((Date.now()-(S.start[d]||Date.now()))/60000));
+  S.hist.unshift({d:ds,day:planOf(d).title,slot:S.slot==='full'?'フル':'圧縮',
+                  dn:dn,tot:tot,min:el>0?el:null,ex:detail});
+  S.hist=S.hist.slice(0,40);
+
+  ['af','as','bf','bs','sf','ss','df','ds'].forEach(k=>{
+    if(PLAN[k].g===g){
+      delete S.done[k]; delete S.start[k];
+      Object.keys(S.reps).forEach(rk=>{ if(rk.indexOf(k+':')===0) delete S.reps[rk]; });
+      Object.keys(S.sw).forEach(rk=>{ if(rk.indexOf(k+':')===0) delete S.sw[rk]; });
+    }});
+  S.next=o[(o.indexOf(g)+1)%o.length]; curG=S.next;
+  // タイマーを止める
+  clearInterval(tid); tid=null; tEnd=0; S.timer=null;
+  const tm=document.getElementById('timer'); if(tm) tm.classList.remove('show');
+  const fb=document.getElementById('fab'); if(fb) fb.classList.remove('up');
+  save();
+  nextCard();tabs();panel();renderHist();renderVol();
+  unlockScreen();
+  const hs=document.getElementById('hist');
+  if(hs){ const dd=hs.closest('details'); if(dd){ dd.open=true; dd.scrollIntoView({behavior:'smooth',block:'center'}); } }
+}
+document.getElementById('adv').onclick=finishDay;
+document.querySelectorAll('.cchip').forEach(c=>c.onclick=()=>{S.next=c.dataset.c;save();nextCard();tabs();});
+
+/* ============ 履歴 ============ */
+function volume(perWeek){
+  const map={a:['af','as'],b:['bf','bs'],s:['sf','ss'],d:['df','ds']};
+  const order=(S.split==='3')?['a','b','d']:['a','b','d','s'];
+  // 短縮日の比率をカレンダーから推定
+  const tr=SEP.filter(x=>x[3]);
+  const shortRatio=tr.filter(x=>x[2]==='B').length/Math.max(1,tr.length);
+  const T={};
+  // perWeek 回を order で順送りしたときの週あたりセット
+  for(let i=0;i<order.length;i++){
+    const g=order[i];
+    const times=perWeek/order.length;          // その日が週に回る回数
+    [[map[g][0],1-shortRatio],[map[g][1],shortRatio]].forEach(([key,ratio])=>{
+      const ex=(S.split==='3'&&MERGE3[key])?PLAN[key].ex.concat(MERGE3[key]):PLAN[key].ex;
+      ex.forEach(e=>{
+        const parts=MUSCLE[e.id]; if(!parts) return;
+        const n=(e.ss?e.ss.sets:e.sets)*times*ratio;
+        parts.forEach(x=>{T[x]=(T[x]||0)+n;});
+      });
+    });
+  }
+  return {T:T,shortRatio:shortRatio};
+}
+let VOLFREQ=null;
+function renderVol(){
+  const el=document.getElementById('vol'); if(!el) return;
+  if(VOLFREQ===null) VOLFREQ=(S.split==='3')?4:5;
+  const {T,shortRatio}=volume(VOLFREQ);
+  const rows=ORDER.map(p=>{
+    const wk=(T[p]||0);
+    const [lo,hi]=REC[p];
+    const mid=(lo+hi)/2;
+    let st,cls;
+    if(wk<lo){ st='不足 '+(lo-wk).toFixed(1); cls='lo'; }
+    else if(wk>hi){ st='過多 +'+(wk-hi).toFixed(1); cls='hi'; }
+    else { st='適正'; cls='ok'; }
+    // バーの位置（0〜hi*1.4 のスケール）
+    const scale=hi*1.4;
+    return {p:p,wk:wk,lo:lo,hi:hi,st:st,cls:cls,
+      left:(lo/scale*100),width:((hi-lo)/scale*100),pos:Math.min(100,wk/scale*100)};
+  });
+  const bad=rows.filter(r=>r.cls!=='ok').length;
+  el.innerHTML=`<div class="freqsw">${[3,4,5,6].map(n=>
+      `<button data-fq="${n}" class="${n===VOLFREQ?'sel':''}">週${n}回</button>`).join('')}</div>
+    <p><b>${S.split==='3'?'3分割':'4分割'}を週${VOLFREQ}回</b>で回した場合の週あたりセット数。<br>
+    短縮日の比率は9月シフトから${Math.round(shortRatio*100)}%で計算。<br>
+    緑の帯が推奨レンジ、縦線が現在値。<b>${bad===0?'全部位が適正範囲。':bad+'部位が範囲外。'}</b></p>
+    <div class="voltbl">`+
+    rows.map(r=>`<div class="volrow">
+      <div class="vhead"><span class="vp">${r.p}</span>
+        <span class="vv">${r.wk.toFixed(1)}<i>/週</i></span>
+        <span class="vs ${r.cls}">${r.st}</span></div>
+      <div class="vbar"><span class="vrange" style="left:${r.left}%;width:${r.width}%"></span>
+        <span class="vmark ${r.cls}" style="left:${r.pos}%"></span></div>
+      <div class="vnum">推奨 ${r.lo}〜${r.hi}</div>
+    </div>`).join('')+`</div>
+    <h4>読み方</h4>
+    <ul>
+      <li>推奨レンジは<b>週10〜20セット</b>を基本に、部位の大きさと役割で調整した値</li>
+      <li>肩は<b>12〜22</b>と高め。フィジークで三角筋中部が最重要のため</li>
+      <li>回旋腱板は<b>0〜8</b>。肥大目的ではなく肩の傷害予防。プレス系が多いので入れている</li>
+<li>僧帽は<b>0〜10</b>と低め。上部が発達すると首が短く見え、肩の広がりが相殺される。フィジークでは<b>意図的に抑える</b>部位</li>
+      <li><b>四頭</b>＝スクワット・レッグプレス系、<b>ハム臀</b>＝RDL・レッグカール・ヒップスラスト。役割が違うので分けて計上</li>
+    </ul>
+    <h4>分割と頻度の目安</h4>
+    <table><tr><th>頻度</th><th>推奨分割</th><th>1部位の間隔</th></tr>
+    <tr><td>週3〜4回</td><td>3分割</td><td>中4〜5日</td></tr>
+    <tr><td><b>週5回</b></td><td><b>3分割</b></td><td><b>中3.3日</b> ← 9月はこれ</td></tr>
+    <tr><td>週6回以上</td><td>4分割</td><td>中3.7日</td></tr></table>
+    <p><b>分割数を増やすと間隔は開く。</b>4分割は1部位あたり週1.25回にしかならず、週5回でも中4.6日になる。<br>
+    中3〜4日を確保したいなら、頻度に対して<b>分割は少なめ</b>にするのが正しい。<br>
+    4分割が有利になるのは週6回以上を確保できる場合。</p>
+<h4>3分割モードで自動的に外れる種目</h4>
+<p>短縮日は50分厳守のため、以下が自動で外れる。</p>
+<table><tr><th>日</th><th>外れる種目</th></tr>
+<tr><td>B</td><td>フェイスプル（Sの肩後種目が合流するため）</td></tr>
+<tr><td>A短縮</td><td>ワイドチェストプレス</td></tr>
+<tr><td>B短縮</td><td>ワンハンドロウ</td></tr></table>
+<p><b>Aフルは全種目やる</b>（96分）。100分までは許容範囲。<br>
+4分割に戻せば自動で復活する。重量設定と履歴は共有されるので、切り替えても記録は続く。</p>
+    <h4>範囲内でも見直すサイン</h4>
+    <ul>
+      <li>該当部位の重量が<b>2週続けて落ちる</b> → その部位を2〜3セット減らす</li>
+      <li>筋肉痛が次のセッションまで引く → オフを1日足す</li>
+      <li>カット中は<b>上限側より下限側</b>で回す方が安全</li>
+    </ul>`;
+  el.querySelectorAll('[data-fq]').forEach(b=>b.onclick=()=>{
+    VOLFREQ=+b.dataset.fq; renderVol();
+  });
+}
+
+function renderCal(){
+  const el=document.getElementById('cal'); if(!el) return;
+  const NM={a:'A 胸',b:'B 背中',s:'S 肩腕',d:'D 脚'};
+  el.innerHTML=`<p>シフト <b>A・D＝早朝勤務でオフ</b>／<b>B＝短縮日</b>／<b>C・空欄＝フル</b><br>
+    トレ<b>21回</b>・オフ9日。各部位7回ずつ、<b>平均 中3.3〜3.5日</b>。</p>
+    <div class="calgrid">`+
+    SEP.map(([d,w,c,g])=>{
+      const short=(c==='B');
+      return `<div class="cald ${g?('g'+g):'off'}">
+        <span class="cd">${d}<i>${w}</i></span>
+        <span class="cg">${g?NM[g]:'休'}</span>
+        <span class="cs">${g?(short?'短縮':'フル'):(c||'')}</span></div>`;
+    }).join('')+`</div>
+    <p style="margin-top:10px">⚠ 21回は週4.9回。<b>3分割で回すことで中3〜4日を確保</b>している。<br>
+    4分割にすると中4.8日まで開くので、この頻度では3分割が正解。<br>
+    疲労が抜けない週は迷わず1日飛ばす。ベンチの重量が2週続けて落ちたら頻度を下げるサイン。</p>
+    <h4>連日になる日の注意</h4>
+    <ul>
+    <li><b>B → S が連日</b>（2〜3日、25〜26日）：Bのフェイスプルと翌日の肩後種目が重なる。Sの日のリバースフライを1セット減らすか、重量を落とす</li>
+    <li>3日連続の後は必ずオフが入る配置になっている。順番を入れ替えるとこのリズムが崩れる</li>
+    <li>シフトが変わって並びが崩れたら、<b>B と D を連日にしない</b>ことだけ守る（バーベルロウとスクワット・RDLで腰が連続する）</li>
+    </ul>`;
+}
+
+function renderHist(){
+  const el=document.getElementById('hist');
+  if(!el) return;
+  if(!S.hist.length){ el.innerHTML='<p>まだ記録がありません。トレーニング後に「完了→次へ」を押すとここに残ります。</p>'; return; }
+  el.innerHTML=S.hist.map((x,n)=>`
+    <div class="hcard">
+      <div class="hhead"><span class="hd">${x.d}</span><span class="hm">${x.day}</span>
+        <span class="hs">${x.slot}</span>
+        <span class="hn">${x.dn}/${x.tot}セット${x.min?'・'+x.min+'分':''}</span></div>
+      ${x.ex&&x.ex.length?`<div class="hbody">${x.ex.map(e=>
+        `<div class="hrow"><span class="hex">${e.n}</span><span class="hrec">${e.r}</span></div>`).join('')}</div>`:''}
+    </div>`).join('')
+    +`<div class="hbtns"><button class="hclear" id="hcopy">履歴をコピー</button>
+       <button class="hclear" id="hclear">全消去</button></div>
+       <p style="font-size:12px;color:var(--sub);margin-top:8px">
+       ⚠ 端末やアプリの状態によっては記録が消えることがあります。<br>
+       大事な記録は「履歴をコピー」でメモアプリに貼り付けて保管してください。</p>`;
+  const c=document.getElementById('hcopy');
+  if(c) c.onclick=()=>{
+    const txt=S.hist.map(x=>
+      x.d+'  '+x.day+'（'+x.slot+'）  '+x.dn+'/'+x.tot+'セット'+(x.min?'・'+x.min+'分':'')+'\n'+
+      (x.ex||[]).map(e=>'  '+e.n+'  '+e.r).join('\n')).join('\n\n');
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(()=>{c.textContent='コピーしました';
+        setTimeout(()=>c.textContent='履歴をコピー',1600);});
+    }else{
+      const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);
+      ta.select();try{document.execCommand('copy');c.textContent='コピーしました';
+        setTimeout(()=>c.textContent='履歴をコピー',1600);}catch(e){alert(txt);}
+      document.body.removeChild(ta);
+    }
+  };
+  const b=document.getElementById('hclear');
+  if(b) b.onclick=()=>{ if(confirm('履歴を全部消しますか？（重量設定は残ります）')){S.hist=[];save();renderHist();} };
+}
+
+/* ============ 画面スリープ防止 ============ */
+async function lockScreen(){
+  try{ if('wakeLock' in navigator && !wake){ wake=await navigator.wakeLock.request('screen');
+    wake.addEventListener('release',()=>{wake=null;}); } }catch(e){}
+}
+function unlockScreen(){ try{ if(wake){wake.release();wake=null;} }catch(e){} }
+window.addEventListener('pagehide',saveNow);
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='hidden') saveNow();
+  if(document.visibilityState==='visible'){
+    if(tEnd){ if(!tid&&(tEnd-Date.now())>0) tid=setInterval(tick,250); tick(); }
+    elapsed(); lockScreen();
+  }
+});
+
+/* ============ レストタイマー ============ */
+let tid=null,tEnd=0,ttot=0,rang=false,tLabel='';
+const fmt=s=>Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0');
+function startTimer(sec,label){
+  clearInterval(tid);
+  ttot=sec; tEnd=Date.now()+sec*1000; rang=false; tLabel=label;
+  S.timer={end:tEnd,tot:ttot,label:label}; saveNow();
+  showTimer();
+  tick(); tid=setInterval(tick,250);
+}
+function showTimer(){
+  document.getElementById('tlabel').textContent=tLabel+' のインターバル';
+  document.getElementById('timer').classList.add('show');
+  const f=document.getElementById('fab'); if(f) f.classList.add('up');
+  document.getElementById('tcount').classList.remove('zero');
+}
+// 復元：閉じている間に終わっていたら「次へ」表示、10分以上経過なら消す
+function restoreTimer(){
+  const t=S.timer; if(!t) return;
+  const left=(t.end-Date.now())/1000;
+  if(left < -600){ S.timer=null; save(); return; }
+  tEnd=t.end; ttot=t.tot; tLabel=t.label; rang=left<=0;
+  showTimer(); tick();
+  if(left>0) tid=setInterval(tick,250);
+}
+function tick(){
+  const left=(tEnd-Date.now())/1000;
+  const c=document.getElementById('tcount');
+  if(left<=0){
+    if(!rang){ rang=true; beep(); }
+    c.classList.add('zero'); c.textContent='次へ';
+    document.getElementById('tprog').style.width='0%';
+    clearInterval(tid); tid=null;
+    if(S.timer){ S.timer=null; save(); }
+    return;
+  }
+  c.textContent=fmt(left);
+  document.getElementById('tprog').style.width=Math.max(0,left/ttot*100)+'%';
+}
+function beep(){
+  try{const c=new (window.AudioContext||window.webkitAudioContext)();
+    [0,.18,.36].forEach(t=>{const o=c.createOscillator(),g=c.createGain();
+      o.connect(g);g.connect(c.destination);o.frequency.value=880;
+      g.gain.setValueAtTime(.001,c.currentTime+t);
+      g.gain.exponentialRampToValueAtTime(.25,c.currentTime+t+.02);
+      g.gain.exponentialRampToValueAtTime(.001,c.currentTime+t+.13);
+      o.start(c.currentTime+t);o.stop(c.currentTime+t+.14);});
+  }catch(e){}
+  if(navigator.vibrate) navigator.vibrate([200,80,200]);
+}
+document.getElementById('tstop').onclick=()=>{
+  clearInterval(tid);tid=null;tEnd=0;
+  S.timer=null; saveNow();
+  document.getElementById('timer').classList.remove('show');
+  const f=document.getElementById('fab'); if(f) f.classList.remove('up');
+};
+document.getElementById('tadd').onclick=()=>{
+  if(tEnd<Date.now()) tEnd=Date.now();
+  tEnd+=30000; ttot=Math.max(ttot,(tEnd-Date.now())/1000); rang=false;
+  S.timer={end:tEnd,tot:ttot,label:tLabel}; saveNow();
+  document.getElementById('tcount').classList.remove('zero');
+  clearInterval(tid); tick(); tid=setInterval(tick,250);
+};
+
+/* ============ テーマ ============ */
+function applyTheme(){
+  const dark=S.theme==='dark';
+  document.body.classList.toggle('dark',dark);
+  document.getElementById('themebtn').textContent=dark?'☾':'☀';
+  const m=document.querySelector('meta[name=theme-color]');
+  if(m) m.content=dark?'#0E1218':'#FFFFFF';
+}
+document.getElementById('themebtn').onclick=()=>{
+  S.theme=S.theme==='dark'?'light':'dark';save();applyTheme();
+};
+
+/* ============ 起動 ============ */
+(async()=>{await load();applyTheme();curG=S.next;nextCard();tabs();panel();renderHist();renderCal();renderVol();restoreTimer();})();
+</script>
+</body>
+</html>
