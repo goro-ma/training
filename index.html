@@ -9,10 +9,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="トレ">
 <meta name="theme-color" content="#0D1117">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%230D1117'/%3E%3Crect x='28' y='78' width='124' height='24' rx='6' fill='%23fff'/%3E%3Crect x='18' y='62' width='22' height='56' rx='6' fill='%23D8341C'/%3E%3Crect x='140' y='62' width='22' height='56' rx='6' fill='%23D8341C'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<!-- フォントは読めなくても支障がないよう、通信をブロックしない形で読む -->
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap"
+      rel="stylesheet" media="print" onload="this.media='all'">
 <style>
 :root{
   --bg:#FFFFFF; --panel:#F2F4F7; --line:#C9D0DA; --line2:#E2E7ED;
@@ -353,9 +357,21 @@ tr:nth-child(even) td{background:var(--panel)}
   transform:translateX(-2px);background:var(--text)}
 .vmark.lo{background:var(--hot)} .vmark.hi{background:var(--warn)} .vmark.ok{background:var(--ok)}
 .vnum{font-size:11px;color:var(--sub);font-weight:600;margin-top:4px}
+.calnav{display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.calarr{background:var(--panel);border:2px solid var(--line);color:var(--text);
+  border-radius:6px;padding:6px 12px;font-size:14px;font-weight:700;line-height:1.2}
+.calttl{flex:1;text-align:center;font-family:"Oswald","Arial Narrow",sans-serif;
+  font-size:19px;font-weight:700}
+.calsum{background:var(--panel);border:2px solid var(--line);border-radius:6px;
+  padding:7px 10px;font-size:13px;font-weight:600;margin-top:8px}
+.calsum b{font-family:"Oswald","Arial Narrow",sans-serif;font-size:16px;font-weight:700}
 .calgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:10px}
 .cald{border:2px solid var(--line);border-radius:6px;padding:6px 4px;text-align:center;
-  display:flex;flex-direction:column;gap:1px;min-width:0}
+  display:flex;flex-direction:column;gap:1px;min-width:0;cursor:pointer;background:var(--bg)}
+.cald:active{transform:scale(.96)}
+.cald.today{box-shadow:0 0 0 3px var(--text)}
+.cald.none{border-style:dashed;opacity:.55}
+.cald .cs b{font-family:"Oswald","Arial Narrow",sans-serif;color:var(--text)}
 .cald.off{background:var(--panel);border-style:dashed;opacity:.7}
 .cald.ga{border-color:var(--A)} .cald.gb{border-color:var(--B)}
 .cald.gs{border-color:var(--S)} .cald.gd{border-color:var(--D)}
@@ -368,6 +384,24 @@ tr:nth-child(even) td{background:var(--panel)}
 .hbtns{display:flex;gap:7px;margin-top:6px}
 .hclear{flex:1;background:var(--panel);border:2px solid var(--line);color:var(--text);
   border-radius:7px;padding:10px;font-size:13px;font-weight:700}
+.pnote{margin:4px 0 2px}
+.pnbody{font-size:14.5px;line-height:1.7;font-weight:500;padding:10px 12px;
+  background:var(--panel);border-radius:6px;border-left:5px solid var(--B)}
+.pnempty{font-size:13px;color:var(--sub);font-weight:600;padding:11px 12px;
+  background:var(--panel);border:2px dashed var(--line);border-radius:6px}
+.pnempty span{display:block;font-size:12px;font-weight:400;opacity:.85;margin-top:6px;line-height:1.55}
+.pnedit{width:100%;margin-top:7px}
+.pnta{width:100%;font-family:inherit;font-size:14.5px;line-height:1.6;
+  padding:10px 11px;border:2px solid var(--line);border-radius:6px;
+  background:var(--bg);color:var(--text);resize:vertical}
+.pnhint{font-size:11.5px;color:var(--sub);font-weight:500;margin-top:7px;line-height:1.5}
+.bkbox{margin-top:12px;border:2.5px solid var(--B);border-radius:8px;
+  background:var(--ssbg);padding:11px}
+.bkh{font-size:12px;font-weight:900;color:var(--B);margin-bottom:5px}
+.bkbox p{font-size:13px;line-height:1.55;margin:0}
+.bkmain{background:var(--B);border-color:var(--B);color:#fff}
+.bkdate{font-size:12px;font-weight:700;color:var(--sub);margin-top:8px}
+.bkdate b{color:var(--text)}
 
 .pacts{display:flex;gap:7px;margin-top:10px}
 .pact{flex:1;background:rgba(255,255,255,.2);border:none;color:inherit;border-radius:6px;
@@ -388,7 +422,7 @@ body.dark .pact{background:rgba(0,0,0,.18)}
   <header class="mast">
     <div class="mtxt">
       <h1>3分割 A → B → D</h1>
-      <p class="sub">メンズフィジーク方向／カット期　80kg・FFMI 23.2・ベンチ1RM 110kg</p>
+      <p class="sub" id="subline"></p>
     </div>
     <button class="themebtn" id="themebtn" title="表示切替">☀</button>
   </header>
@@ -410,7 +444,7 @@ body.dark .pact{background:rgba(0,0,0,.18)}
   </section>
 
   <div class="slots">
-    <div class="slot off"><span class="t">A・Dの日</span><span class="d">早朝勤務（1:30起床）／完全オフ</span></div>
+    <div class="slot off"><span class="t">A・Dの日</span><span class="d">早朝勤務／完全オフ</span></div>
   </div>
 </div>
 
@@ -421,8 +455,8 @@ body.dark .pact{background:rgba(0,0,0,.18)}
       <button data-split="4">4分割<span class="s">週6回・中3.7日</span></button>
     </div>
     <div class="slotsw" id="slotsw">
-      <button data-slot="full">休みの日（C・空欄）<span class="s">午前 ／ フル版</span></button>
-      <button data-slot="short">短縮日（B）<span class="s">早朝4:50 ／ 50分以内</span></button>
+      <button data-slot="full">休みの日（休・C）<span class="s">午前 ／ フル版</span></button>
+      <button data-slot="short">短縮日（B）<span class="s">早朝 ／ 50分以内</span></button>
     </div>
   </div>
   <div class="tabs" id="tabs"></div>
@@ -443,8 +477,8 @@ body.dark .pact{background:rgba(0,0,0,.18)}
 <table><tr><th>状況</th><th>対応</th></tr>
 <tr><td>2週続けて上限に届かない</td><td>その重量で<b>維持</b>と割り切る</td></tr>
 <tr><td><b>2回連続</b>で全セット上限達成</td><td>重量を上げる</td></tr>
-<tr><td>ベンチの想定レンジ</td><td class="num">90 – 95kg</td></tr></table>
-<p><b>90kgを維持できていれば、筋量が保たれている証拠。</b>1RM 110kgのレベルでカット中に伸び続けることはない。</p>
+<tr><td>ベンチの想定レンジ</td><td>カット中は横ばい〜微増</td></tr></table>
+<p><b>メイン種目の重量を維持できていれば、筋量が保たれている証拠。</b>ある程度の挙上レベルに達していれば、カット中に伸び続けることはない。</p>
 <h4>記録の扱い</h4>
 <ul><li>記録更新の判定は<b>休みの日枠のみ</b></li>
 <li>早朝枠は別ログ。5〜10%低いのが正常</li></ul>
@@ -529,73 +563,42 @@ A＝胸4 → 三頭2　／　B＝広がり → 後鎖 → 厚み → 肩後　�
 <tr><td>プリチャー台</td><td>インクラインベンチの背もたれを使って同じ角度を作る</td></tr>
 <tr><td>レッグエクステンション<br>／レッグカール</td><td>各1台のみ。混雑時はスーパーセットを解いて個別に</td></tr></table>
 <p><b>Sの日はインクラインベンチを3種目で使う</b>（ショルダープレス・リアレイズ・インクラインカール）。混雑時は長時間占有になるので、間に他の種目を挟むか代替に切り替える。</p>
-<h4>加古川駅前店のマシン</h4>
-<table><tr><th>マシン</th><th>用途</th></tr>
-<tr><td>ワイドチェストプレス</td><td>A-4。胸の外側</td></tr>
-<tr><td>デュアルペクトラル<br>リバースフライ</td><td>B-7。リアデルト</td></tr>
-<tr><td>ニーリングイージー<br>チンディップ</td><td>懸垂の追い込み</td></tr>
-<tr><td>デュアルアジャスタブル<br>プーリー</td><td>ケーブルサイドレイズ／フライ</td></tr>
-<tr><td>プリチャーカール台</td><td>B フル 8番目。ブラキアリス</td></tr>
-<tr><td>エルコリナ</td><td>実機を確認。胸用ならインクラインの代替候補</td></tr></table>
+<h4>よく使うマシン</h4>
+<div id="note-gym"></div>
+</div></details>
+
+<details><summary>プロフィール</summary><div class="db">
+<p>ここに入れた内容は<b>この端末の中だけ</b>に保存されます。公開されているページのファイルには一切書き込まれません。</p>
+<div id="note-headline"></div>
 </div></details>
 
 <details><summary>タイムライン</summary><div class="db">
-<h4>短縮日 ／ 6:15帰宅</h4>
-<table>
-<tr><td class="num">4:00</td><td>起床、水500ml</td></tr>
-<tr><td class="num">4:10</td><td>バナナ1本＋EAA</td></tr>
-<tr><td class="num">4:20</td><td><b>家でウォームアップ 5分</b>（足踏み・肩甲骨・股関節）</td></tr>
-<tr><td class="num">4:30</td><td>出発</td></tr>
-<tr><td class="num">4:50</td><td>ジム着 → ランプアップ4分</td></tr>
-<tr><td class="num">4:54</td><td>トレーニング開始</td></tr>
-<tr><td class="num">5:40</td><td>終了・シャワー・着替え</td></tr>
-<tr><td class="num">5:55</td><td>ジム発</td></tr>
-<tr><td class="num">6:15</td><td>帰宅・朝食</td></tr>
-<tr><td class="num">7:30</td><td>職場着</td></tr></table>
-<p><b>実働は 4:54〜5:40 の46分。</b>ジムでのランプアップ4分を含めて50分。<br>
-就寝は<b>21:00目標</b>（7時間確保）。崩れる週は短縮日のトレを1回スキップ。</p>
-<div class="note bad"><b>4:00起床を週2〜3回。</b>睡眠が6時間を切る週が続いたら、頻度より睡眠を優先する。<br>
-カット期に睡眠不足が重なると、減るのが脂肪ではなく筋肉になる。</div>
-<h4>休みの日枠 ／ 90分</h4>
-<table>
-<tr><td class="num">7:00</td><td>通常の朝食一式</td></tr>
-<tr><td class="num">9:00</td><td>トレ開始</td></tr>
-<tr><td class="num">10:00</td><td>EAA追加（Bの日はマルトデキストリン20g）</td></tr>
-<tr><td class="num">10:30</td><td>終了</td></tr>
-<tr><td class="num">10:50</td><td>プロテイン＋炭水化物</td></tr>
-<tr><td class="num">12:30</td><td>昼食</td></tr></table>
-<p>90分でも後半はグリコーゲンが薄くなる。カット中なので中間の補給は入れておく。</p>
+<div id="note-timeline"></div>
 </div></details>
 
-<details><summary>栄養 ／ カット期</summary><div class="db">
-<table><tr><th></th><th>トレ日</th><th>オフ日</th></tr>
-<tr><td>カロリー</td><td class="num">2,200</td><td class="num">2,050</td></tr>
-<tr><td>タンパク質</td><td class="num">160g</td><td class="num">160g</td></tr>
-<tr><td>脂質</td><td class="num">45-50g</td><td class="num">45-50g</td></tr>
-<tr><td>炭水化物</td><td class="num">280g</td><td class="num">230g</td></tr></table>
-<ul><li>炭水化物はトレ前後に厚く配置</li>
-<li>納豆・キムチ・アカモク・ヨーグルトはトレ後の食事へ</li>
-<li>早朝勤務日＝オフ日として扱う</li></ul>
+<details><summary>栄養</summary><div class="db">
+<div id="note-nutrition"></div>
 </div></details>
 
-<details><summary>膝について</summary><div class="db">
-<p>整形外科で<b>構造的な異常なし</b>と確認済み。制限を外して通常運用に戻している。</p>
-<h4>守ること</h4>
+<details><summary>体のコンディション</summary><div class="db">
+<h4>スクワットで守ること</h4>
 <ul>
 <li>深さは<b>パラレル</b>まで。浅いスクワットは膝蓋大腿関節へのストレスがかえって高い</li>
 <li>膝と爪先の向きを揃える。膝が内に入らない</li>
 <li>レッグプレスは腰が浮かない範囲まで</li>
 <li>レッグエクステンションは反動を使わない</li>
 </ul>
-<h4>再受診の目安</h4>
+<h4>受診を考える目安</h4>
 <ul><li>特定の角度で鋭い痛みが出る</li><li>階段の下りで痛む</li><li>腫れ・熱感・引っかかり感がある</li></ul>
 <p>いずれかが出たら重量を落として様子を見る。改善しなければ受診する。「異常なし」は診断時点の話で、負荷を上げた後も同じとは限らない。</p>
+<h4>自分の記録</h4>
+<div id="note-knee"></div>
 </div></details>
 
 <details><summary>見直しの判断基準</summary><div class="db">
 <p>3週間続けて確認する。</p>
 <table><tr><th>項目</th><th>OK</th><th>NGなら</th></tr>
-<tr><td>ベンチ90kg</td><td>横ばい以上</td><td>カロリーか睡眠を疑う</td></tr>
+<tr><td>ベンチの重量</td><td>横ばい以上</td><td>カロリーか睡眠を疑う</td></tr>
 <tr><td>日中の眠気</td><td>悪化なし</td><td>早朝を週1回に</td></tr>
 <tr><td>睡眠時間</td><td>平均7時間</td><td>頻度より睡眠を優先</td></tr>
 <tr><td>膝の痛み</td><td>0〜2/10</td><td>重量を1段階下げる</td></tr>
@@ -606,19 +609,19 @@ A＝胸4 → 三頭2　／　B＝広がり → 後鎖 → 厚み → 肩後　�
 
 <details><summary>増量期への移行</summary><div class="db">
 <table><tr><th>項目</th><th>変更内容</th></tr>
-<tr><td>カロリー</td><td>2,700-2,800</td></tr>
-<tr><td>炭水化物</td><td>350-380g（タンパク質160gは据え置き）</td></tr>
+<tr><td>カロリー</td><td>カット期から +500〜600</td></tr>
+<tr><td>炭水化物</td><td>+70〜100g（タンパク質は据え置き）</td></tr>
 <tr><td>A フル</td><td>3番目をスタンディングOHP（55kg）に</td></tr>
 <tr><td>D フル</td><td>RDL ⇄ デッドリフト を隔週交互</td></tr>
 <tr><td>D フル</td><td>スクワットを 5×5 に。重量を追う</td></tr>
 <tr><td>圧縮版</td><td>変更なし</td></tr>
 <tr><td>セット数</td><td>休みの日枠で胸・背中を各+3〜4</td></tr></table>
-<p>ベンチは増量期6ヶ月で1RM 120kg前後が現実的な射程。スクワットも増量期に入れば 100kg 台が視野に入る。</p>
+<p>増量期6ヶ月で、ベンチは 1RM +10kg 前後が現実的な射程。スクワットも増量期に入れば大きく伸びる。</p>
 </div></details>
 
 <details><summary>ボリューム診断</summary><div class="db" id="vol"></div></details>
 
-<details><summary>9月のスケジュール</summary><div class="db" id="cal"></div></details>
+<details><summary>勤務シフト／スケジュール</summary><div class="db" id="cal"></div></details>
 
 <details><summary>トレーニング履歴</summary><div class="db" id="hist"></div></details>
 </div>
@@ -626,13 +629,14 @@ A＝胸4 → 三頭2　／　B＝広がり → 後鎖 → 厚み → 肩後　�
 <p class="savenote" id="savenote">記録は自動保存されています</p>
 
 <div class="howto">
-  <h4>ホーム画面に追加する</h4>
+  <h4>ホーム画面に追加する（必ずやってください）</h4>
   <ol>
-    <li>この画面を <b>端末のブラウザ</b>で開く<br><span>Claudeアプリで見ている場合は、ファイルをダウンロードして「ファイル」アプリから開くか、右上のメニューにブラウザで開く項目がないか確認</span></li>
+    <li>この画面を <b>端末のブラウザ</b>で開く<br><span>iPhoneは必ず Safari で開く。ChromeやアプリのブラウザだとPWAとして追加できません</span></li>
     <li>ブラウザの <b>共有／メニュー</b>ボタンをタップ<br><span>iPhone Safari＝下部中央の共有アイコン／Android Chrome＝右上の「⋮」</span></li>
     <li><b>「ホーム画面に追加」</b>を選ぶ</li>
   </ol>
-  <p>ホーム画面から開けばアイコン1タップで起動でき、チェック・重量の記録も端末に保存されます。</p>
+  <p><b>ホーム画面から開くと、電波がなくても起動します。</b>一度でも開いておけば、ジムの地下や圏外でも問題ありません。<br>
+  逆に、ホーム画面に追加せずSafariのタブのまま使うと、<b>iPhoneが7日で記録を勝手に消します。</b>必ず追加してください。</p>
 </div>
 </div>
 
@@ -829,9 +833,9 @@ const MERGE3={
      {id:'sf8',name:'腕＋僧帽',ss:{lab:'スーパーセット × 3組／インターバル 1:00',sets:3,rest:60,
       rows:[{k:'sf8a',n:'ハンマーカール',w:10,u:'kg×2',st:1,r:'10-12'},
             {k:'sf8b',n:'ダンベルシュラッグ',w:24,u:'kg×2',st:2,r:'12-15'}]}}],
- as:[{id:'ss3',name:'肩 中部＋前部',ss:{lab:'スーパーセット × 3組／インターバル 1:00',sets:3,rest:60,
+ as:[{id:'m3as',name:'肩 中部＋前部',ss:{lab:'スーパーセット × 3組／インターバル 1:00',sets:3,rest:60,
       rows:[{k:'ss3a',n:'ダンベルサイドレイズ',w:8,u:'kg×2',st:1,r:'15-20'},
-            {k:'ss3b',n:'ダンベルショルダープレス',w:16,u:'kg×2',st:2,r:'10-12'}]}}],
+            {k:'m3asP',n:'ダンベルショルダープレス',w:16,u:'kg×2',st:2,r:'10-12'}]}}],
  bs:[{id:'ss4',name:'腕',ss:{lab:'スーパーセット × 3組／インターバル 1:00',sets:3,rest:60,
       rows:[{k:'ss4a',n:'ハンマーカール',w:10,u:'kg×2',st:1,r:'10-12'},
             {k:'ss4b',n:'プレスダウン',w:12.5,u:'kg',st:2.5,r:'15-20'}]}}]
@@ -907,8 +911,9 @@ bf3:['背中'],bf2:['背中'],bf4:['背中'],bfS:['背中'],bfV:['肩後'],
  sf1:['肩'],sf2:['肩'],sf3:['肩'],sf4:['肩後'],sf5:['肩後'],
  sfP:['二頭'],sfI:['二頭'],sf8:['二頭','僧帽'],sfR:['回旋腱板'],
  ss1:['肩'],ss2:['肩'],ss3:['肩','肩後'],ssP:['二頭'],ss4:['二頭','三頭'],
+ m3as:['肩','肩'],
  df1:['四頭'],df2:['四頭'],dfR:['ハム臀'],df3:['四頭'],df4:['四頭'],df5:['ハム臀'],
- ds5:['四頭'],ds1:['四頭'],ds2:['四頭','ハム臀'],ds3:['四頭'],dsH:['ハム臀']
+ ds5:['四頭'],ds1:['四頭'],ds2:['四頭','ハム臀'],dsH:['ハム臀']
 };
 // 部位ごとの推奨レンジ（週セット数）
 const REC={
@@ -916,35 +921,87 @@ const REC={
  '四頭':[8,20],'ハム臀':[8,18],'三頭':[8,16],'二頭':[8,16],'僧帽':[0,10],'回旋腱板':[0,8]
 };
 const ORDER=['胸','背中','肩','肩後','四頭','ハム臀','三頭','二頭','僧帽','回旋腱板'];
-const SEP=[[1,'火','','a'],[2,'水','B','b'],[3,'木','C','d'],[4,'金','A',null],
-[5,'土','','a'],[6,'日','','b'],[7,'月','C','d'],[8,'火','A',null],
-[9,'水','','a'],[10,'木','B','b'],[11,'金','C','d'],[12,'土','D',null],
-[13,'日','','a'],[14,'月','B','b'],[15,'火','A',null],[16,'水','A',null],
-[17,'木','','d'],[18,'金','B','a'],[19,'土','','b'],[20,'日','D',null],
-[21,'月','','d'],[22,'火','','a'],[23,'水','D',null],[24,'木','A',null],
-[25,'金','','b'],[26,'土','','d'],[27,'日','','a'],[28,'月','A',null],
-[29,'火','','b'],[30,'水','B','d']];
+
+/* ===== 勤務シフト =====
+   コードは自分の勤務表に合わせてタップで入力する。
+   A・D＝早朝勤務でトレはオフ／B＝日勤で短縮日／C＝午後勤務・空欄＝休みでフル版 */
+const SHIFTS=[['','未入力','none'],['休','休み','full'],['A','早朝勤務','off'],
+              ['B','日勤','short'],['C','午後勤務','full'],['D','早朝勤務','off']];
+const WD=['日','月','火','水','木','金','土'];
+const ymKey=(y,m)=>y+'-'+m;
+const shiftInfo=c=>{const r=SHIFTS.find(x=>x[0]===(c||''))||SHIFTS[0];
+  return {code:r[0],label:r[1],mode:r[2]};};
+function shiftOf(y,m,d){ const o=S.shift[ymKey(y,m)]; return (o&&o[d])||''; }
+function setShift(y,m,d,c){
+  const k=ymKey(y,m); S.shift[k]=S.shift[k]||{};
+  if(c) S.shift[k][d]=c; else delete S.shift[k][d];
+  if(!Object.keys(S.shift[k]).length) delete S.shift[k];
+  save();
+}
+// その月に1日でも入力があるか（未入力の月は「予定なし」扱いにする）
+const hasShift=(y,m)=>!!S.shift[ymKey(y,m)];
+const daysIn=(y,m)=>new Date(y,m,0).getDate();
+// 今日を起点に、S.next から順送りして その日にやる部位を予測する
+function projectGroup(y,m,day){
+  const order=(S.split==='3')?['a','b','d']:['a','b','d','s'];
+  const today=new Date(); today.setHours(0,0,0,0);
+  const t=new Date(y,m-1,day);
+  if(t<today) return null;
+  let n=0; const cur=new Date(today);
+  while(cur<t){
+    const md=shiftInfo(shiftOf(cur.getFullYear(),cur.getMonth()+1,cur.getDate())).mode;
+    if(md!=='off'&&md!=='none') n++;   // 未入力の日は数に入れない
+    cur.setDate(cur.getDate()+1);
+  }
+  const i=order.indexOf(S.next);
+  return order[((i<0?0:i)+n)%order.length];
+}
+// 今月の実績から短縮日の比率を出す。未入力なら 0.4 を仮置き
+function shortRatio(){
+  const n=new Date(), y=n.getFullYear(), m=n.getMonth()+1;
+  let tr=0,sh=0;
+  for(let d=1;d<=daysIn(y,m);d++){
+    const md=shiftInfo(shiftOf(y,m,d)).mode;
+    if(md==='off'||md==='none') continue;
+    tr++; if(md==='short') sh++;
+  }
+  return tr?sh/tr:0.4;
+}
 const TARGET={full:90*60,short:50*60};
 const KEY='trainplan-v1';
 
 /* ============ 状態 ============ */
-let S={next:'a',slot:'full',split:'4',theme:'light',w:{},lv:{},hit:{},done:{},reps:{},sw:{},hist:[],last:{},start:{},timer:null};
+const VER=2;
+let S={ver:VER,next:'a',slot:'full',split:'3',theme:null,w:{},lv:{},hit:{},done:{},reps:{},sw:{},
+        hist:[],last:{},lastReps:{},lastW:{},start:{},shift:{},notes:{},timer:null,backup:null};
 let curG='a', saveT=null, wake=null, elapT=null;
+let calY=0, calM=0;   // シフト表で表示中の年月
 const dayId=()=>VARIANT[curG][S.slot];
 
-// 初回起動時のみ：9月以降なら4分割、それ以前は3分割
-function defaultSplit(){
-  const d=new Date();
-  const ym=d.getFullYear()*100+(d.getMonth()+1);
-  return '3';   // 9月は週5回・3分割で中3.3日を確保
-}
 async function load(){
   let raw=null;
   try{ const r=await window.storage.get(KEY); if(r&&r.value) raw=r.value; }catch(e){}
   if(raw===null){ try{ raw=localStorage.getItem(KEY); }catch(e){} }
-  if(raw){ try{ S=Object.assign(S,JSON.parse(raw)); }catch(e){} }
-  else { S.split=defaultSplit(); }   // 初回のみ日付で判定
-  S.hist=S.hist||[]; S.last=S.last||{}; S.start=S.start||{}; S.reps=S.reps||{}; S.lv=S.lv||{}; S.sw=S.sw||{}; S.hit=S.hit||{}; S.split=S.split||'4';
+  let oldVer=VER;
+  if(raw){
+    try{
+      const o=JSON.parse(raw);
+      oldVer=o.ver||1;              // 保存されていた側のバージョンを見る
+      S=Object.assign(S,o);
+    }catch(e){}
+  }
+  S.hist=S.hist||[]; S.last=S.last||{}; S.lastReps=S.lastReps||{}; S.lastW=S.lastW||{}; S.start=S.start||{};
+  S.reps=S.reps||{}; S.lv=S.lv||{}; S.sw=S.sw||{}; S.hit=S.hit||{}; S.done=S.done||{};
+  S.shift=S.shift||{}; S.notes=S.notes||{}; S.split=S.split||'3';
+  // v1 → v2 移行：やりかけのチェックだけ捨てる。
+  // 重量・履歴・進捗カウンタは種目IDで持っているのでそのまま引き継がれる。
+  if(oldVer<2){
+    S.done={}; S.reps={}; S.sw={}; S.start={};
+  }
+  S.ver=VER;
+  if(S.theme===null||S.theme===undefined){
+    S.theme=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
+  }
   GROUPS=(S.split==='3')?GROUPS3:GROUPS4;
   if(S.split==='3'&&curG==='s') curG='a';
   if(S.split==='3'&&S.next==='s') S.next='a';
@@ -965,13 +1022,27 @@ function save(){
   },400);
 }
 const wOf=e=>(S.w[e.id]!==undefined?S.w[e.id]:e.w);
-const isDone=(d,i,s)=>!!(S.done[d]&&S.done[d][i+'_'+s]);
+// 記録のキーは「上から何番目か」ではなく種目IDで持つ。
+// 3分割⇄4分割で並び順が変わっても記録が別種目にズレない。
+function idOf(d,i){ const e=planOf(d).ex[i]; return e?e.id:('x'+i); }
+const isDone=(d,i,s)=>!!(S.done[d]&&S.done[d][idOf(d,i)+'_'+s]);
 const upper=r=>{const m=String(r||'').match(/(\d+)\s*$/);return m?+m[1]:null;};
+const lower=r=>{const m=String(r||'').match(/^\s*(\d+)/);return m?+m[1]:null;};
 function targetRep(e,s){
   if(e.setReps) return upper(e.setReps[s]);
   return upper(e.reps);
 }
-const rKey=(d,i,s)=>d+':'+i+'_'+s;
+function lowerRep(e,s){
+  if(e.setReps) return lower(e.setReps[s]);
+  return lower(e.reps);
+}
+// ○を押したときに入る初期値：前回の同じセットの実績。なければレンジ下限。
+function defaultRep(e,s){
+  const L=S.lastReps&&S.lastReps[e.id];
+  if(L&&L[s]!=null) return L[s];
+  return lowerRep(e,s);
+}
+const rKey=(d,i,s)=>d+':'+idOf(d,i)+'_'+s;
 const getRep=(d,i,s)=>S.reps[rKey(d,i,s)];
 function setRep(d,i,s,v){ S.reps[rKey(d,i,s)]=Math.max(1,Math.min(99,v)); save(); }
 const getSW=(d,i,s)=>S.sw[rKey(d,i,s)];
@@ -984,21 +1055,33 @@ function wLabel(e,w){
 const canNeg=e=>(e.unit||'').indexOf('加重')>=0;
 function setSW(d,i,s,v,e){ const lo=(e&&canNeg(e))?-60:0;
   S.sw[rKey(d,i,s)]=Math.max(lo,Math.round(v*100)/100); save(); }
-// 未実施セットに表示する重量：直前セットの実績があればそれ、なければ基準重量
+// 前回のセットごとの重量を引き継ぐ。
+// ただし基準重量を自分で変えた（＋− や「重量を上げる」）ときは引き継がず、新しい重量を使う。
+function lastSetW(e,wi){
+  const L=S.lastW&&S.lastW[e.id];
+  if(!L||!L.length||wi<0) return undefined;
+  if(L[0]===undefined||Math.abs(L[0]-wOf(e))>0.001) return undefined;
+  for(let k=Math.min(wi,L.length-1);k>=0;k--) if(L[k]!==undefined) return L[k];
+  return undefined;
+}
+// 未実施セットに表示する重量
+// ① このセットの実績 → ② 今日の直前セット → ③ 前回の同じセット → ④ 基準重量
 function planW(d,e,i,s){
   const own=getSW(d,i,s); if(own!==undefined) return own;
   for(let k=s-1;k>=0;k--){ const p=getSW(d,i,k); if(p!==undefined) return p; }
+  const lw=lastSetW(e,s-(e.wu?1:0));
+  if(lw!==undefined) return lw;
   return wOf(e);
 }
 function check(d,i,s,def){
   S.done[d]=S.done[d]||{};
-  S.done[d][i+'_'+s]=1;
+  S.done[d][idOf(d,i)+'_'+s]=1;
   if(def!=null && getRep(d,i,s)===undefined) S.reps[rKey(d,i,s)]=def;
   if(!S.start[d]) S.start[d]=Date.now();
   save();
 }
 function uncheck(d,i,s){
-  if(S.done[d]) delete S.done[d][i+'_'+s];
+  if(S.done[d]) delete S.done[d][idOf(d,i)+'_'+s];
   delete S.reps[rKey(d,i,s)];
   delete S.sw[rKey(d,i,s)];
   save();
@@ -1025,7 +1108,17 @@ function remainSec(d){
   return t;
 }
 const mins=s=>Math.round(s/60)+'分';
-const doneSets=d=>Object.keys(S.done[d]||{}).length;
+// いま表示中のメニューに含まれる種目だけを数える。
+// （分割を切り替えると外れる種目があるため、キーの総数では数えない）
+function doneSets(d){
+  const m=S.done[d]; if(!m) return 0;
+  let c=0;
+  planOf(d).ex.forEach(e=>{
+    const n=(e.ss?e.ss.sets:e.sets)+(e.wu?1:0);
+    for(let s=0;s<n;s++) if(m[e.id+'_'+s]) c++;
+  });
+  return c;
+}
 
 /* ============ プレート計算 ============ */
 function plateHTML(id,w,lbl){
@@ -1170,11 +1263,12 @@ function exHTML(d,e,i){
             ?`<b style="font-size:15px">${wLabel(e,pw)}</b>`
             :`<b>${pw}</b><i>${unit}</i>`}</span>
           <span class="fld plain"><b>${tgt||'-'}</b><i>回</i></span>
-          <button class="ck" data-i="${i}" data-s="${idx}" data-r="${e.rest}" data-def="${targetRep(e,s)||''}" data-nw="${pw}">○</button></div>`;
+          <button class="ck" data-i="${i}" data-s="${idx}" data-r="${e.rest}" data-def="${defaultRep(e,s)||''}" data-nw="${pw}">○</button></div>`;
       }
     }
     body+=`</div>`;
-    if(e.reps||e.setReps) body+=`<div class="hint">○ を押すと完了。実際の重量・回数は −＋ で修正。✓ を押すと取消。</div>`;
+    if(e.reps||e.setReps) body+=`<div class="hint">○ を押すと完了。<b>重量・回数とも前回やった値</b>がセットごとに入るので、変わった分だけ ＋− を押す。✓ を押すと取消。<br>
+      上の大きい ＋− で基準重量を変えると、そちらが優先されます。</div>`;
     body+=levelup(d,e,i);
   }
   if(FORM[e.id]) body+=`<div class="formbox"><span class="fh">フォーム</span>${FORM[e.id].split('｜').map(x=>`<span class="fi">${x}</span>`).join('')}</div>`;
@@ -1308,37 +1402,45 @@ function elapsed(){
 }
 
 /* ============ ローテーション ============ */
-// カレンダーから今日の予定を引く
-function todayPlan(){
-  const d=new Date();
-  if(d.getFullYear()!==2026||d.getMonth()+1!==9) return null;
-  const row=SEP.find(x=>x[0]===d.getDate());
-  return row||null;
-}
 function renderToday(){
   const el=document.getElementById('todaybar'); if(!el) return;
-  const t=todayPlan();
   const NM={a:'A プッシュ',b:'B プル',s:'S 肩・腕',d:'D レッグ'};
-  if(!t){ el.innerHTML='<span class="tdate">9月のカレンダー対象外</span><span class="tnote">下の「次にやる日」に従う</span>'; return; }
-  const [dd,ww,cc,gg]=t;
-  const shift = (cc==='A'||cc==='D')?'早朝勤務':(cc==='B'?'日勤':(cc==='C'?'午後勤務':'休み'));
-  if(!gg){
+  const n=new Date(), y=n.getFullYear(), m=n.getMonth()+1, dd=n.getDate();
+  const ww=WD[n.getDay()];
+  const head=`${m}/${dd}（${ww}）`;
+
+  const inf=shiftInfo(shiftOf(y,m,dd));
+  if(inf.mode==='none'){
     el.className='todaybar off';
-    el.innerHTML=`<span class="tdate">9/${dd}（${ww}）${shift}</span><span class="tbig">オフ</span>
+    el.innerHTML=`<span class="tdate">${head}</span><span class="tbig">シフト未入力</span>
+      <span class="tnote">下の「勤務シフト」で今日の勤務を入れると、ここに予定が出ます</span>
+      <button class="tsync" data-open="1">シフトを入力する</button>`;
+    const o=el.querySelector('[data-open]');
+    if(o) o.onclick=()=>{
+      const dt=document.getElementById('cal').closest('details');
+      calY=y; calM=m; renderCal();
+      dt.open=true; dt.scrollIntoView({behavior:'smooth',block:'center'});
+    };
+    return;
+  }
+  if(inf.mode==='off'){
+    el.className='todaybar off';
+    el.innerHTML=`<span class="tdate">${head}${inf.label}</span><span class="tbig">オフ</span>
       <span class="tnote">回復日。ウォーキング20〜30分は入れてよい</span>`;
     return;
   }
-  const slot = (cc==='B')?'short':'full';
-  const slotL = (cc==='B')?'短縮 50分・4:00起床':'フル・午前';
+  const gg=projectGroup(y,m,dd)||S.next;
+  const slot=(inf.mode==='short')?'short':'full';
+  const slotL=(slot==='short')?'短縮 50分・早朝':'フル・午前';
   el.className='todaybar g'+gg;
-  el.innerHTML=`<span class="tdate">9/${dd}（${ww}）${shift}</span>
+  el.innerHTML=`<span class="tdate">${head}${inf.label}</span>
     <span class="tbig">${NM[gg]}</span>
     <span class="tnote">${slotL}</span>
     ${(gg!==S.next||slot!==S.slot)?`<button class="tsync" data-g="${gg}" data-s="${slot}">この予定に合わせる</button>`:'<span class="tok">設定済み ✓</span>'}`;
   const b=el.querySelector('.tsync');
   if(b) b.onclick=()=>{
     S.next=b.dataset.g; curG=b.dataset.g; S.slot=b.dataset.s;
-    save(); nextCard(); tabs(); panel(); renderVol();
+    save(); nextCard(); tabs(); panel(); renderVol(); renderCal();
   };
 }
 
@@ -1370,18 +1472,23 @@ function finishDay(){
       }).join(' / ')});
       return;
     }
-    let vary=false,w0=null;const parts=[];
+    let vary=false,w0=null;const parts=[],repsArr=[],wArr=[];
     for(let s=0;s<n;s++){
       const rep=getRep(d,i,s+k); if(rep===undefined) continue;
       const sw=planW(d,e,i,s+k);
       if(w0===null) w0=sw; else if(sw!==w0) vary=true;
       parts.push({w:sw,g:rep});
+      repsArr[s]=rep;
+      wArr[s]=sw;
     }
     if(!parts.length) return;
     const rstr = vary ? parts.map(p=>wLabel(e,p.w)+'×'+p.g).join(' / ')
                       : wLabel(e,w0)+'　'+parts.map(p=>p.g).join('/');
     detail.push({n:e.name,r:rstr});
     S.last[e.id]={w:(w0!==null?w0:wOf(e)),d:ds,r:(vary?rstr:parts.map(p=>p.g).join('/')),v:vary};
+    // 次回の初期値になる（重量・回数ともセットごとに引き継ぐ）
+    S.lastReps[e.id]=repsArr;
+    S.lastW[e.id]=wArr;
     // 全セット上限達成なら回数を加算、そうでなければリセット
     if(e.sets&&e.unit!=='自重'){
       const kk=e.wu?1:0; let allHit=true,anyRep=false,dropped=false;
@@ -1409,7 +1516,7 @@ function finishDay(){
     }});
   S.next=o[(o.indexOf(g)+1)%o.length]; curG=S.next;
   // タイマーを止める
-  clearInterval(tid); tid=null; tEnd=0; S.timer=null;
+  clearInterval(tid); tid=null; tEnd=0; S.timer=null; clearBeep();
   const tm=document.getElementById('timer'); if(tm) tm.classList.remove('show');
   const fb=document.getElementById('fab'); if(fb) fb.classList.remove('up');
   save();
@@ -1426,14 +1533,13 @@ function volume(perWeek){
   const map={a:['af','as'],b:['bf','bs'],s:['sf','ss'],d:['df','ds']};
   const order=(S.split==='3')?['a','b','d']:['a','b','d','s'];
   // 短縮日の比率をカレンダーから推定
-  const tr=SEP.filter(x=>x[3]);
-  const shortRatio=tr.filter(x=>x[2]==='B').length/Math.max(1,tr.length);
+  const sr=shortRatio();
   const T={};
   // perWeek 回を order で順送りしたときの週あたりセット
   for(let i=0;i<order.length;i++){
     const g=order[i];
     const times=perWeek/order.length;          // その日が週に回る回数
-    [[map[g][0],1-shortRatio],[map[g][1],shortRatio]].forEach(([key,ratio])=>{
+    [[map[g][0],1-sr],[map[g][1],sr]].forEach(([key,ratio])=>{
       const ex=(S.split==='3'&&MERGE3[key])?PLAN[key].ex.concat(MERGE3[key]):PLAN[key].ex;
       ex.forEach(e=>{
         const parts=MUSCLE[e.id]; if(!parts) return;
@@ -1442,13 +1548,13 @@ function volume(perWeek){
       });
     });
   }
-  return {T:T,shortRatio:shortRatio};
+  return {T:T,sr:sr};
 }
 let VOLFREQ=null;
 function renderVol(){
   const el=document.getElementById('vol'); if(!el) return;
   if(VOLFREQ===null) VOLFREQ=(S.split==='3')?4:5;
-  const {T,shortRatio}=volume(VOLFREQ);
+  const {T,sr}=volume(VOLFREQ);
   const rows=ORDER.map(p=>{
     const wk=(T[p]||0);
     const [lo,hi]=REC[p];
@@ -1466,7 +1572,7 @@ function renderVol(){
   el.innerHTML=`<div class="freqsw">${[3,4,5,6].map(n=>
       `<button data-fq="${n}" class="${n===VOLFREQ?'sel':''}">週${n}回</button>`).join('')}</div>
     <p><b>${S.split==='3'?'3分割':'4分割'}を週${VOLFREQ}回</b>で回した場合の週あたりセット数。<br>
-    短縮日の比率は9月シフトから${Math.round(shortRatio*100)}%で計算。<br>
+    短縮日の比率は<b>今月の勤務シフト</b>から${Math.round(sr*100)}%で計算${hasShift(new Date().getFullYear(),new Date().getMonth()+1)?'':'（未入力のため仮の値）'}。<br>
     緑の帯が推奨レンジ、縦線が現在値。<b>${bad===0?'全部位が適正範囲。':bad+'部位が範囲外。'}</b></p>
     <div class="voltbl">`+
     rows.map(r=>`<div class="volrow">
@@ -1488,7 +1594,7 @@ function renderVol(){
     <h4>分割と頻度の目安</h4>
     <table><tr><th>頻度</th><th>推奨分割</th><th>1部位の間隔</th></tr>
     <tr><td>週3〜4回</td><td>3分割</td><td>中4〜5日</td></tr>
-    <tr><td><b>週5回</b></td><td><b>3分割</b></td><td><b>中3.3日</b> ← 9月はこれ</td></tr>
+    <tr><td><b>週5回</b></td><td><b>3分割</b></td><td><b>中3.3日</b> ← 基本これ</td></tr>
     <tr><td>週6回以上</td><td>4分割</td><td>中3.7日</td></tr></table>
     <p><b>分割数を増やすと間隔は開く。</b>4分割は1部位あたり週1.25回にしかならず、週5回でも中4.6日になる。<br>
     中3〜4日を確保したいなら、頻度に対して<b>分割は少なめ</b>にするのが正しい。<br>
@@ -1514,45 +1620,165 @@ function renderVol(){
 
 function renderCal(){
   const el=document.getElementById('cal'); if(!el) return;
+  if(!calY){ const n=new Date(); calY=n.getFullYear(); calM=n.getMonth()+1; }
   const NM={a:'A 胸',b:'B 背中',s:'S 肩腕',d:'D 脚'};
-  el.innerHTML=`<p>シフト <b>A・D＝早朝勤務でオフ</b>／<b>B＝短縮日</b>／<b>C・空欄＝フル</b><br>
-    トレ<b>21回</b>・オフ9日。各部位7回ずつ、<b>平均 中3.3〜3.5日</b>。</p>
-    <div class="calgrid">`+
-    SEP.map(([d,w,c,g])=>{
-      const short=(c==='B');
-      return `<div class="cald ${g?('g'+g):'off'}">
-        <span class="cd">${d}<i>${w}</i></span>
-        <span class="cg">${g?NM[g]:'休'}</span>
-        <span class="cs">${g?(short?'短縮':'フル'):(c||'')}</span></div>`;
-    }).join('')+`</div>
-    <p style="margin-top:10px">⚠ 21回は週4.9回。<b>3分割で回すことで中3〜4日を確保</b>している。<br>
-    4分割にすると中4.8日まで開くので、この頻度では3分割が正解。<br>
-    疲労が抜けない週は迷わず1日飛ばす。ベンチの重量が2週続けて落ちたら頻度を下げるサイン。</p>
-    <h4>連日になる日の注意</h4>
+  const n=new Date(), days=daysIn(calY,calM);
+  const isToday=d=>n.getFullYear()===calY&&n.getMonth()+1===calM&&n.getDate()===d;
+  let tr=0,off=0,sh=0,none=0,cells='';
+  for(let d=1;d<=days;d++){
+    const c=shiftOf(calY,calM,d), inf=shiftInfo(c);
+    const w=WD[new Date(calY,calM-1,d).getDay()];
+    if(inf.mode==='none') none++;
+    else if(inf.mode==='off') off++;
+    else { tr++; if(inf.mode==='short') sh++; }
+    const g=(inf.mode==='off'||inf.mode==='none')?null:projectGroup(calY,calM,d);
+    const cls=inf.mode==='none'?'none':(g?('g'+g):'off');
+    cells+=`<div class="cald ${cls}${isToday(d)?' today':''}" data-cd="${d}" role="button" tabindex="0">
+      <span class="cd">${d}<i>${w}</i></span>
+      <span class="cg">${inf.mode==='none'?'—':(inf.mode==='off'?'休':(g?NM[g]:'トレ'))}</span>
+      <span class="cs">${inf.mode==='none'?'未入力':
+        '<b>'+(c||'')+'</b> '+(inf.mode==='off'?'オフ':(inf.mode==='short'?'短縮':'フル'))}</span></div>`;
+  }
+  const filled=tr+off;
+  const perWk=filled?(tr/filled*7):0;
+  el.innerHTML=`
+    <div class="calnav">
+      <button class="calarr" data-mv="-1">‹</button>
+      <span class="calttl">${calY}年 ${calM}月</span>
+      <button class="calarr" data-mv="1">›</button>
+      <button class="calarr" data-mv="0">今月</button>
+    </div>
+    <p>日付をタップすると勤務が切り替わります（<b>未入力 → 休 → A → B → C → D</b>）。<br>
+    <b>A・D＝早朝勤務でトレはオフ</b>／<b>B＝日勤で短縮日</b>／<b>C＝午後勤務・休＝フル版</b></p>
+    <div class="calsum">トレ <b>${tr}</b>回（うち短縮 ${sh}）・オフ <b>${off}</b>日　＝　週 <b>${perWk.toFixed(1)}</b>回
+      ${none?`<br><span style="color:var(--hottx)">未入力が ${none}日 あります</span>`:''}</div>
+    <div class="calgrid">${cells}</div>
+    <div class="hbtns"><button class="hclear" id="calcopy">先月のシフトをコピー</button>
+      <button class="hclear" id="calclr">この月を空にする</button></div>
+    <p style="margin-top:10px">部位（A 胸／B 背中／D 脚）は<b>今日を起点に自動で順送り</b>されます。
+    「記録して次へ」を押すたびに進むので、1日飛ばしても勝手にズレません。<br>
+    ${perWk>=4.5?'週4.5回以上のペースです。<b>3分割で回して中3〜4日</b>を確保してください。':'疲労が抜けない週は迷わず1日飛ばす。ベンチの重量が2週続けて落ちたら頻度を下げるサイン。'}</p>
+    <h4>並べるときの注意</h4>
     <ul>
-    <li><b>B → S が連日</b>（2〜3日、25〜26日）：Bのフェイスプルと翌日の肩後種目が重なる。Sの日のリバースフライを1セット減らすか、重量を落とす</li>
-    <li>3日連続の後は必ずオフが入る配置になっている。順番を入れ替えるとこのリズムが崩れる</li>
-    <li>シフトが変わって並びが崩れたら、<b>B と D を連日にしない</b>ことだけ守る（バーベルロウとスクワット・RDLで腰が連続する）</li>
+    <li><b>B と D を連日にしない</b>。バーベルロウとスクワット・RDLで腰への負担が連続する</li>
+    <li>3日連続でトレが続いたら、次は必ずオフを入れる</li>
+    <li>B（背中）の翌日に S（肩腕）が来ると、フェイスプルと肩後種目が重なる。リバースフライを1セット減らすか重量を落とす</li>
     </ul>`;
+
+  el.querySelectorAll('[data-cd]').forEach(b=>{
+    const go=()=>{
+      const d=+b.dataset.cd;
+      const cur=shiftOf(calY,calM,d);
+      const i=SHIFTS.findIndex(x=>x[0]===cur);
+      setShift(calY,calM,d,SHIFTS[(i+1)%SHIFTS.length][0]);
+      renderCal(); renderToday(); renderVol();
+    };
+    b.onclick=go;
+    b.onkeydown=ev=>{ if(ev.key==='Enter'||ev.key===' '){ ev.preventDefault(); go(); } };
+  });
+  el.querySelectorAll('[data-mv]').forEach(b=>b.onclick=()=>{
+    const mv=+b.dataset.mv;
+    if(mv===0){ const t=new Date(); calY=t.getFullYear(); calM=t.getMonth()+1; }
+    else { calM+=mv; if(calM<1){calM=12;calY--;} if(calM>12){calM=1;calY++;} }
+    renderCal();
+  });
+  const cp=document.getElementById('calcopy');
+  if(cp) cp.onclick=()=>{
+    let py=calY,pm=calM-1; if(pm<1){pm=12;py--;}
+    const src=S.shift[ymKey(py,pm)];
+    if(!src){ alert(py+'年'+pm+'月のシフトが入っていません。'); return; }
+    // 曜日を合わせてコピーする（1日の曜日ずれを吸収）
+    const off=(new Date(calY,calM-1,1).getDay()-new Date(py,pm-1,1).getDay()+7)%7;
+    const dst={};
+    for(let d=1;d<=daysIn(py,pm);d++){
+      const t=d+off; if(t>=1&&t<=daysIn(calY,calM)&&src[d]) dst[t]=src[d];
+    }
+    S.shift[ymKey(calY,calM)]=dst; save();
+    renderCal(); renderToday(); renderVol();
+  };
+  const cl=document.getElementById('calclr');
+  if(cl) cl.onclick=()=>{
+    if(!confirm(calY+'年'+calM+'月のシフトを全部消しますか？')) return;
+    delete S.shift[ymKey(calY,calM)]; save();
+    renderCal(); renderToday(); renderVol();
+  };
+}
+
+// 全データを1つのファイルに書き出す（重量設定・進捗カウンタ・シフトも含む）
+function exportBackup(){
+  const d=new Date();
+  const p=n=>String(n).padStart(2,'0');
+  const name='training-backup-'+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'.json';
+  const blob=new Blob([JSON.stringify(S,null,1)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=name; document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  S.backup=d.getFullYear()+'/'+(d.getMonth()+1)+'/'+d.getDate(); save();
+}
+function importBackup(file){
+  const r=new FileReader();
+  r.onload=()=>{
+    let o=null;
+    try{ o=JSON.parse(r.result); }catch(e){}
+    if(!o||typeof o!=='object'){
+      alert('このファイルはバックアップとして読めませんでした。'); return;
+    }
+    // プロフィールだけのファイル → メモだけ差し替え、記録には触らない
+    if(o.notes && !('w' in o)){
+      if(!confirm('プロフィール（個人メモ）を読み込みます。\nトレーニングの記録や重量の設定はそのまま残ります。\n\nよろしいですか？')) return;
+      S.notes=Object.assign({},S.notes,o.notes);
+      saveNow(); renderNotes();
+      alert('プロフィールを読み込みました。'); return;
+    }
+    if(!('w' in o)){ alert('このファイルはバックアップとして読めませんでした。'); return; }
+    const cnt=(o.hist||[]).length;
+    if(!confirm('今のデータを、このバックアップで置き換えます。\n履歴 '+cnt+'件・書き出し日 '+(o.backup||'不明')+'\n\nよろしいですか？')) return;
+    S=Object.assign({},S,o); S.ver=VER;
+    GROUPS=(S.split==='3')?GROUPS3:GROUPS4;
+    curG=S.next; calY=0; calM=0;
+    saveNow(); applyTheme();
+    nextCard();tabs();panel();renderHist();renderCal();renderVol();renderNotes();
+    alert('読み込みました。');
+  };
+  r.readAsText(file);
 }
 
 function renderHist(){
   const el=document.getElementById('hist');
   if(!el) return;
-  if(!S.hist.length){ el.innerHTML='<p>まだ記録がありません。トレーニング後に「完了→次へ」を押すとここに残ります。</p>'; return; }
-  el.innerHTML=S.hist.map((x,n)=>`
+  const tools=`<div class="hbtns"><button class="hclear" id="hcopy">履歴をコピー</button>
+       <button class="hclear" id="hclear">履歴を消去</button></div>
+     <div class="bkbox">
+       <div class="bkh">バックアップ</div>
+       <p>重量設定・進捗・シフト・履歴を<b>まるごと1ファイル</b>に書き出します。
+       機種変更やデータが消えたときは、このファイルから元に戻せます。</p>
+       <div class="hbtns"><button class="hclear bkmain" id="bkout">書き出す</button>
+         <button class="hclear" id="bkin">読み込む</button></div>
+       <input type="file" id="bkfile" accept="application/json,.json" hidden>
+       <div class="bkdate">${S.backup?'最終バックアップ： <b>'+S.backup+'</b>':'⚠ まだ一度も書き出していません'}</div>
+     </div>
+     <p style="font-size:12px;color:var(--sub);margin-top:8px">
+     ⚠ iPhoneは、ホーム画面に追加していないサイトのデータを<b>7日使わないと自動で削除</b>します。
+     必ずホーム画面から開き、月に一度はバックアップを書き出してください。</p>`;
+
+  el.innerHTML=(!S.hist.length
+    ? '<p>まだ記録がありません。トレーニング後に「記録して次へ」を押すとここに残ります。</p>'
+    : S.hist.map(x=>`
     <div class="hcard">
       <div class="hhead"><span class="hd">${x.d}</span><span class="hm">${x.day}</span>
         <span class="hs">${x.slot}</span>
         <span class="hn">${x.dn}/${x.tot}セット${x.min?'・'+x.min+'分':''}</span></div>
       ${x.ex&&x.ex.length?`<div class="hbody">${x.ex.map(e=>
         `<div class="hrow"><span class="hex">${e.n}</span><span class="hrec">${e.r}</span></div>`).join('')}</div>`:''}
-    </div>`).join('')
-    +`<div class="hbtns"><button class="hclear" id="hcopy">履歴をコピー</button>
-       <button class="hclear" id="hclear">全消去</button></div>
-       <p style="font-size:12px;color:var(--sub);margin-top:8px">
-       ⚠ 端末やアプリの状態によっては記録が消えることがあります。<br>
-       大事な記録は「履歴をコピー」でメモアプリに貼り付けて保管してください。</p>`;
+    </div>`).join(''))+tools;
+
+  document.getElementById('bkout').onclick=()=>{ exportBackup(); renderHist(); };
+  const fi=document.getElementById('bkfile');
+  document.getElementById('bkin').onclick=()=>fi.click();
+  fi.onchange=()=>{ if(fi.files&&fi.files[0]) importBackup(fi.files[0]); fi.value=''; };
+
   const c=document.getElementById('hcopy');
   if(c) c.onclick=()=>{
     const txt=S.hist.map(x=>
@@ -1572,6 +1798,52 @@ function renderHist(){
   if(b) b.onclick=()=>{ if(confirm('履歴を全部消しますか？（重量設定は残ります）')){S.hist=[];save();renderHist();} };
 }
 
+/* ============ 個人メモ ============
+   体重・勤務時間・通っているジムなど、他人に見られたくない内容はここに入れる。
+   保存先はこの端末だけ。公開されている index.html には中身が入らない。 */
+const NOTEDEF={
+ headline:{ph:'目指す方向・体重・主な種目の記録など\n（画面のいちばん上に表示されます）',rows:3},
+ gym:{ph:'通っているジムのマシン名と、どの種目で使うか',rows:10},
+ timeline:{ph:'起床から就寝までの流れ。\n短縮日と休みの日で分けて書いておくと使いやすい',rows:14},
+ nutrition:{ph:'カロリー・タンパク質・脂質・炭水化物の目安と、食事のルール',rows:12},
+ knee:{ph:'関節の状態、受診した結果、気をつけていること',rows:6}
+};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const noteHTML=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>');
+
+function renderNote(k){
+  const el=document.getElementById('note-'+k); if(!el) return;
+  const def=NOTEDEF[k], v=(S.notes&&S.notes[k])||'';
+  el.innerHTML=`<div class="pnote">
+    ${v?`<div class="pnbody">${noteHTML(v)}</div>`
+       :`<div class="pnempty">まだ入力されていません<span>${noteHTML(def.ph)}</span></div>`}
+    <button class="hclear pnedit" data-note="${k}">${v?'編集する':'入力する'}</button></div>`;
+  el.querySelector('[data-note]').onclick=()=>editNote(k);
+}
+function editNote(k){
+  const el=document.getElementById('note-'+k), def=NOTEDEF[k];
+  const v=(S.notes&&S.notes[k])||'';
+  el.innerHTML=`<div class="pnote">
+    <textarea class="pnta" id="ta-${k}" rows="${def.rows}" placeholder="${esc(def.ph)}">${esc(v)}</textarea>
+    <div class="hbtns"><button class="hclear bkmain" data-sv="${k}">保存</button>
+      <button class="hclear" data-cx="${k}">取消</button></div>
+    <div class="pnhint">**アスタリスク2つ**で囲むと太字になります。<br>
+      この内容は<b>この端末にだけ</b>保存され、公開ページのファイルには入りません。</div></div>`;
+  el.querySelector('[data-sv]').onclick=()=>{
+    S.notes=S.notes||{};
+    S.notes[k]=document.getElementById('ta-'+k).value.trim();
+    save(); renderNote(k); if(k==='headline') applyHeadline();
+  };
+  el.querySelector('[data-cx]').onclick=()=>renderNote(k);
+}
+function applyHeadline(){
+  const el=document.getElementById('subline'); if(!el) return;
+  const v=(S.notes&&S.notes.headline)||'';
+  el.innerHTML=v?noteHTML(v)
+    :'<span style="opacity:.65">プロフィール未入力 ／「運用ルール」の中から入力できます</span>';
+}
+function renderNotes(){ Object.keys(NOTEDEF).forEach(renderNote); applyHeadline(); }
+
 /* ============ 画面スリープ防止 ============ */
 async function lockScreen(){
   try{ if('wakeLock' in navigator && !wake){ wake=await navigator.wakeLock.request('screen');
@@ -1582,7 +1854,12 @@ window.addEventListener('pagehide',saveNow);
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='hidden') saveNow();
   if(document.visibilityState==='visible'){
-    if(tEnd){ if(!tid&&(tEnd-Date.now())>0) tid=setInterval(tick,250); tick(); }
+    unlockAudio();
+    if(tEnd){
+      const left=(tEnd-Date.now())/1000;
+      if(left>0){ if(!tid) tid=setInterval(tick,250); scheduleBeep(left); }
+      tick();
+    }
     elapsed(); lockScreen();
   }
 });
@@ -1594,6 +1871,7 @@ function startTimer(sec,label){
   clearInterval(tid);
   ttot=sec; tEnd=Date.now()+sec*1000; rang=false; tLabel=label;
   S.timer={end:tEnd,tot:ttot,label:label}; saveNow();
+  scheduleBeep(sec);
   showTimer();
   tick(); tid=setInterval(tick,250);
 }
@@ -1610,13 +1888,13 @@ function restoreTimer(){
   if(left < -600){ S.timer=null; save(); return; }
   tEnd=t.end; ttot=t.tot; tLabel=t.label; rang=left<=0;
   showTimer(); tick();
-  if(left>0) tid=setInterval(tick,250);
+  if(left>0){ scheduleBeep(left); tid=setInterval(tick,250); }
 }
 function tick(){
   const left=(tEnd-Date.now())/1000;
   const c=document.getElementById('tcount');
   if(left<=0){
-    if(!rang){ rang=true; beep(); }
+    if(!rang){ rang=true; buzz(); }
     c.classList.add('zero'); c.textContent='次へ';
     document.getElementById('tprog').style.width='0%';
     clearInterval(tid); tid=null;
@@ -1626,19 +1904,42 @@ function tick(){
   c.textContent=fmt(left);
   document.getElementById('tprog').style.width=Math.max(0,left/ttot*100)+'%';
 }
-function beep(){
-  try{const c=new (window.AudioContext||window.webkitAudioContext)();
-    [0,.18,.36].forEach(t=>{const o=c.createOscillator(),g=c.createGain();
-      o.connect(g);g.connect(c.destination);o.frequency.value=880;
-      g.gain.setValueAtTime(.001,c.currentTime+t);
-      g.gain.exponentialRampToValueAtTime(.25,c.currentTime+t+.02);
-      g.gain.exponentialRampToValueAtTime(.001,c.currentTime+t+.13);
-      o.start(c.currentTime+t);o.stop(c.currentTime+t+.14);});
+/* iPhoneは「画面を触った瞬間」以外に音を鳴らせない。
+   そのため音の準備は画面タップ時に済ませ、鳴らす時刻だけ先に予約しておく。
+   こうすると裏に回ってタイマーが止められても、予約した音は鳴る。 */
+let AC=null, beepNodes=[];
+function unlockAudio(){
+  try{
+    if(!AC) AC=new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==='suspended') AC.resume();
+    if(!AC._primed){
+      const b=AC.createBuffer(1,1,22050), s=AC.createBufferSource();
+      s.buffer=b; s.connect(AC.destination); s.start(0); AC._primed=1;
+    }
   }catch(e){}
-  if(navigator.vibrate) navigator.vibrate([200,80,200]);
 }
+document.addEventListener('touchend',unlockAudio,{passive:true});
+document.addEventListener('click',unlockAudio,{passive:true});
+
+function clearBeep(){ beepNodes.forEach(o=>{try{o.stop();}catch(e){}}); beepNodes=[]; }
+function scheduleBeep(sec){
+  clearBeep(); unlockAudio();
+  if(!AC) return;
+  const t0=AC.currentTime+Math.max(0,sec);
+  [0,.18,.36].forEach(t=>{
+    const o=AC.createOscillator(), g=AC.createGain();
+    o.connect(g); g.connect(AC.destination); o.frequency.value=880;
+    g.gain.setValueAtTime(.0001,t0+t);
+    g.gain.exponentialRampToValueAtTime(.3,t0+t+.02);
+    g.gain.exponentialRampToValueAtTime(.0001,t0+t+.13);
+    o.start(t0+t); o.stop(t0+t+.14);
+    beepNodes.push(o);
+  });
+}
+function buzz(){ try{ if(navigator.vibrate) navigator.vibrate([200,80,200]); }catch(e){} }
 document.getElementById('tstop').onclick=()=>{
   clearInterval(tid);tid=null;tEnd=0;
+  clearBeep();
   S.timer=null; saveNow();
   document.getElementById('timer').classList.remove('show');
   const f=document.getElementById('fab'); if(f) f.classList.remove('up');
@@ -1647,6 +1948,7 @@ document.getElementById('tadd').onclick=()=>{
   if(tEnd<Date.now()) tEnd=Date.now();
   tEnd+=30000; ttot=Math.max(ttot,(tEnd-Date.now())/1000); rang=false;
   S.timer={end:tEnd,tot:ttot,label:tLabel}; saveNow();
+  scheduleBeep((tEnd-Date.now())/1000);
   document.getElementById('tcount').classList.remove('zero');
   clearInterval(tid); tick(); tid=setInterval(tick,250);
 };
@@ -1664,7 +1966,20 @@ document.getElementById('themebtn').onclick=()=>{
 };
 
 /* ============ 起動 ============ */
-(async()=>{await load();applyTheme();curG=S.next;nextCard();tabs();panel();renderHist();renderCal();renderVol();restoreTimer();})();
+(async()=>{
+  await load();
+  applyTheme();
+  curG=S.next;
+  nextCard();tabs();panel();renderHist();renderCal();renderVol();renderNotes();restoreTimer();
+  // ブラウザに「このデータは勝手に消さないで」と申告する（対応端末のみ）
+  try{ if(navigator.storage&&navigator.storage.persist) navigator.storage.persist(); }catch(e){}
+  // オフラインでも起動できるようにする
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>{
+      navigator.serviceWorker.register('./sw.js').catch(()=>{});
+    });
+  }
+})();
 </script>
 </body>
 </html>
